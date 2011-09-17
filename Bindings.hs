@@ -1,12 +1,17 @@
 module Bindings (idle,display, reshape, keyboardMouse) where
 
 import Graphics.Rendering.OpenGL
-import Graphics.UI.GLUT
+import Graphics.UI.GLUT as GL
 import Display
 
 -------------------------------------------------------------
 reshape s@(Size w h) = do
-  viewport $= (Position 0 0, s)
+  GL.viewport $= (Position 0 0, s)
+  
+  GL.matrixMode $= GL.Projection
+  GL.loadIdentity
+  GL.perspective 45 ((fromIntegral w)/(fromIntegral h)) 0.1 130
+  GL.matrixMode $= GL.Modelview 0
 
 -------------------------------------------------------------
 keyboardAct delta position (Char ' ') Down = do

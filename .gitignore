@@ -1,4 +1,4 @@
 *.swp
 *.o
 *.hi
-./opengl1
+opengl1
