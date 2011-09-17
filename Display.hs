@@ -17,7 +17,6 @@ initGL = do
       Where DisplayStencil IsNotLessThan 2,
       With  DisplayDouble ]
 
-
   window <- GL.createWindow "OpenGL1"
 
   -- set the redraw color
