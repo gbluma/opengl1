@@ -2,7 +2,8 @@ module Display (initGL,display,idle) where
 
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT as GL
-import Cube
+--import Cube
+import Graphics.UI.GLUT.Objects
 import Data.IORef
 
 initGL = do 
@@ -57,7 +58,9 @@ display angle position = do
 
 
     -- finally apply the mesh to the above transforms
-    cube (0.2::GLfloat)
+    -- cube (0.2::GLfloat)
+    renderObject Solid (Teapot 0.2)
+
 
   -- display the scene
   GL.swapBuffers
