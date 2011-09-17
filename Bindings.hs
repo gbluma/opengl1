@@ -30,7 +30,7 @@ keyboardAct _ delta position (Char '=') Down = do
 keyboardAct _ delta position (Char '-') Down = do
   -- slow down rotation
   delta' <- get delta
-  delta $= -delta'/2
+  delta $= delta'/2
 
 -------------------------------------------------------------
 keyboardAct _ delta position (SpecialKey KeyLeft) Down = do
