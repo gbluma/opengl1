@@ -29,17 +29,16 @@ initGL = do
 display angle position = do
 
   -- clear the scene
-  GL.clear [ GL.ColorBuffer ]
+  GL.clear [ GL.ColorBuffer, GL.DepthBuffer ]
 
+  -- provide a relative rendering context
   GL.loadIdentity
-
 
   a <- get angle
   GL.translate $ Vector3 (0.0::GLfloat) (0.0::GLfloat) (-1::GLfloat)
   GL.rotate a $ Vector3 (1::GLfloat) 0 (1::GLfloat)
   GL.scale 1 1 (1::GLfloat)
 
-  -- introduce a context matrix
   GL.preservingMatrix $ do
 
     -- set the color

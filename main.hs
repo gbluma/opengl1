@@ -29,7 +29,7 @@ main = do
   GL.reshapeCallback $= Just reshape
   
   -- setup keyboard and mouse (found in Bindings.hs)
-  GL.keyboardMouseCallback $= Just (keyboardMouse delta position)
+  GL.keyboardMouseCallback $= Just (keyboardMouse window delta position)
 
   GL.idleCallback $= Just (idle angle delta)
   
