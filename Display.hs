@@ -3,6 +3,8 @@ module Display (initGL,display,idle) where
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT as GL
 import Data.IORef
+import TGA
+import Graphics.GLUtil
 
 initGL = do 
   GL.initialDisplayMode $= [DoubleBuffered, WithDepthBuffer]

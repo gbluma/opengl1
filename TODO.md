@@ -2,7 +2,7 @@
 # Task List for OpenGL application
 
 1. Get an FPS display (log to console)
-2. Image loader (probably SDL-Image)
+2. Image loader (RAW targa loader)
 3. Textured Cube
 4. Basic Lighting
 5. MultiTexturing
