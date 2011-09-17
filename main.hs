@@ -15,12 +15,15 @@ myPoints =
 main = do
   (progname, _) <- getArgsAndInitialize
 
-  window <- initGL
 
   -- state variables, holy cow!
   angle    <- newIORef (0.0::GLfloat)
   delta    <- newIORef (0.1::GLfloat)
   position <- newIORef (0.0::GLfloat, 0.0)
+
+
+  window <- initGL
+  GL.depthFunc $= Just Less
 
   -- register a display callback (found in Display.hs)
   GL.displayCallback $= (display angle position)

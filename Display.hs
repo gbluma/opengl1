@@ -6,9 +6,18 @@ import Cube
 import Data.IORef
 
 initGL = do 
-  GL.initialDisplayMode $= [DoubleBuffered]
+  GL.initialDisplayMode $= [DoubleBuffered, WithDepthBuffer]
   GL.initialWindowSize $= GL.Size 580 400
   GL.initialWindowPosition $= GL.Position 20 20
+
+  GL.initialDisplayCapabilities $= 
+    [ With  DisplayRGB,
+      Where DisplayDepth IsAtLeast 16,
+      With  DisplaySamples,
+      Where DisplayStencil IsNotLessThan 2,
+      With  DisplayDouble ]
+
+
   window <- GL.createWindow "OpenGL1"
 
   -- set the redraw color
@@ -20,7 +29,7 @@ initGL = do
   -- scale the scene to be the correct aspect ratio
   GL.matrixMode $= GL.Projection
   GL.loadIdentity
-  GL.perspective 45 ((fromIntegral 580)/(fromIntegral 400)) 0.1 130
+  GL.perspective 45 ((fromIntegral 580)/(fromIntegral 400)) 0.1 100
   GL.matrixMode $= GL.Modelview 0
 
   return window
