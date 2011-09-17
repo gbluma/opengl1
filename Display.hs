@@ -6,14 +6,14 @@ import Cube
 import Data.IORef
 
 -------------------------------------------------------------
-display angle = do
+display angle position = do
   -- clear the scene
   clear [ColorBuffer]
 
   loadIdentity
 
   a <- get angle
-  rotate a $ Vector3 0 0 (1::GLfloat)
+  rotate a $ Vector3 (1::GLfloat) 0 (1::GLfloat)
   scale 0.7 0.7 (0.7::GLfloat)
 
   -- introduce a context matrix
@@ -25,8 +25,8 @@ display angle = do
                    (0.3::GLfloat)
 
     -- set the tranlation
-    translate $ Vector3 (0.3::GLfloat)
-                        (0.2::GLfloat)
+    translate $ Vector3 (0.0::GLfloat)
+                        (0.0::GLfloat)
                         (0.0::GLfloat)
 
 
@@ -38,7 +38,8 @@ display angle = do
 
 
 -------------------------------------------------------------
-idle angle = do
+idle angle delta = do
   a <- get angle
-  angle $= a + 0.1
+  d <- get delta
+  angle $= a + d
   postRedisplay Nothing
