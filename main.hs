@@ -4,11 +4,6 @@ import Bindings
 import Display
 import Data.IORef
 
-myPoints :: [(GLfloat, GLfloat, GLfloat)]
-myPoints = 
-  [(0.2, 0.3, 0.0),
-   (0.5, 0.2, 0.0),
-   (0.5, 0.5, 0.0)]
 
 
 -------------------------------------------------------------

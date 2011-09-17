@@ -6,6 +6,9 @@ import Data.IORef
 import TGA
 import Graphics.GLUtil
 
+--vertex4 :: Float -> Float -> Float -> Float -> GL.Vertex4 Float
+--vertex4 = GL.Vertex4 
+
 initGL = do 
   GL.initialDisplayMode $= [DoubleBuffered, WithDepthBuffer]
   GL.initialWindowSize $= GL.Size 580 400
@@ -21,7 +24,7 @@ initGL = do
   window <- GL.createWindow "OpenGL1"
 
   -- set the redraw color
-  GL.clearColor $= GL.Color4 0 0 0 0
+  GL.clearColor $= GL.Color4 0.2 0.2 0.2 0
 
   -- tell opengl the size of the rendering area
   GL.viewport $= (GL.Position 20 20, GL.Size 580 400)
@@ -60,6 +63,13 @@ display angle position = do
     -- finally apply the mesh to the above transforms
     -- cube (0.2::GLfloat)
     renderObject Solid (Teapot 0.2)
+
+{-
+  GL.translate $ Vector3 (0.5::GLfloat) 0.5 0
+  GL.color $ Color3 1 1 (1::GLfloat)
+-}
+  --GL.currentRasterPosition $= Vertex4 0 0 0 1 
+  GL.renderString GL.Fixed8By13 "Testing" 
 
 
   -- display the scene
