@@ -1,39 +1,48 @@
 module Display (initGL,display,idle) where
 
 import Graphics.Rendering.OpenGL
-import Graphics.UI.GLUT as GL
+import Graphics.UI.GLUT as GLUT
 import Data.IORef
 import TGA
 import Graphics.GLUtil
 
---vertex4 :: Float -> Float -> Float -> Float -> GL.Vertex4 Float
---vertex4 = GL.Vertex4 
+--vertex4 :: Float -> Float -> Float -> Float -> GLUT.Vertex4 Float
+--vertex4 = GLUT.Vertex4 
 
 initGL = do 
-  GL.initialDisplayMode $= [DoubleBuffered, WithDepthBuffer]
-  GL.initialWindowSize $= GL.Size 580 400
-  GL.initialWindowPosition $= GL.Position 20 20
+  GLUT.initialDisplayMode $= [DoubleBuffered, WithDepthBuffer]
+  GLUT.initialWindowSize $= GLUT.Size 580 400
+  GLUT.initialWindowPosition $= GLUT.Position 20 20
 
-  GL.initialDisplayCapabilities $= 
+  GLUT.initialDisplayCapabilities $= 
     [ With  DisplayRGB,
       Where DisplayDepth IsAtLeast 16,
       With  DisplaySamples,
       Where DisplayStencil IsNotLessThan 2,
       With  DisplayDouble ]
 
-  window <- GL.createWindow "OpenGL1"
+  window <- GLUT.createWindow "OpenGL1"
 
   -- set the redraw color
-  GL.clearColor $= GL.Color4 0.2 0.2 0.2 0
+  GLUT.clearColor $= GLUT.Color4 0.2 0.2 0.2 0
 
   -- tell opengl the size of the rendering area
-  GL.viewport $= (GL.Position 20 20, GL.Size 580 400)
+  GLUT.viewport $= (GLUT.Position 20 20, GLUT.Size 580 400)
 
   -- scale the scene to be the correct aspect ratio
-  GL.matrixMode $= GL.Projection
-  GL.loadIdentity
-  GL.perspective 45 ((fromIntegral 580)/(fromIntegral 400)) 0.1 100
-  GL.matrixMode $= GL.Modelview 0
+  GLUT.matrixMode $= GLUT.Projection
+  GLUT.loadIdentity
+  GLUT.perspective 45 ((fromIntegral 580)/(fromIntegral 400)) 0.1 100
+  GLUT.matrixMode $= GLUT.Modelview 0
+
+  -- setup lighting
+  GLUT.shadeModel $= GLUT.Smooth
+  GLUT.materialSpecular Front $= Color4 0.7 0.75 0.7 0.7
+  GLUT.materialShininess Front $= 127
+
+  GLUT.lighting $= Enabled
+  GLUT.light (Light 0) $= Enabled
+  GLUT.position (Light 0) $= Vertex4 2 2 2 0
 
   return window
 
@@ -41,39 +50,39 @@ initGL = do
 display angle position = do
 
   -- clear the scene
-  GL.clear [ GL.ColorBuffer, GL.DepthBuffer ]
+  GLUT.clear [ GLUT.ColorBuffer, GLUT.DepthBuffer ]
 
   -- provide a relative rendering context
-  GL.loadIdentity
+  GLUT.loadIdentity
 
   a <- get angle
-  GL.translate $ Vector3 (0.0::GLfloat) (0.0::GLfloat) (-1::GLfloat)
-  GL.rotate a $ Vector3 (1::GLfloat) 0 (1::GLfloat)
-  GL.scale 1 1 (1::GLfloat)
+  GLUT.translate $ Vector3 (0.0::GLfloat) (0.0::GLfloat) (-1::GLfloat)
+  GLUT.rotate a $ Vector3 (1::GLfloat) 0 (1::GLfloat)
+  GLUT.scale 1 1 (1::GLfloat)
 
-  GL.preservingMatrix $ do
+  GLUT.preservingMatrix $ do
 
     -- set the color
-    GL.color $ Color3 (0.3::GLfloat) (0.7::GLfloat) (0.3::GLfloat)
+    GLUT.color $ Color3 (0.3::GLfloat) (0.7::GLfloat) (0.3::GLfloat)
 
     -- set the tranlation
-    GL.translate $ Vector3 (0.0::GLfloat) (0.0::GLfloat) (-0.0::GLfloat)
+    GLUT.translate $ Vector3 (0.0::GLfloat) (0.0::GLfloat) (-0.0::GLfloat)
 
 
     -- finally apply the mesh to the above transforms
     -- cube (0.2::GLfloat)
     renderObject Solid (Teapot 0.2)
 
-{-
-  GL.translate $ Vector3 (0.5::GLfloat) 0.5 0
-  GL.color $ Color3 1 1 (1::GLfloat)
--}
-  --GL.currentRasterPosition $= Vertex4 0 0 0 1 
-  GL.renderString GL.Fixed8By13 "Testing" 
-
+  --GLUT.matrixMode $= GLUT.Projection
+  GLUT.loadIdentity
+  GLUT.color $ Color3 1 1 (1::GLfloat)
+  GLUT.currentRasterPosition $= Vertex4  (-0.1) 0.1 (-0.3) 1
+  GLUT.renderString GLUT.Fixed8By13 $  "Tslkfjsdlfklksdlsdlksd sl dsfjld sljkdf jklsdfljkdfs ljds jlsdfjljkl ds" 
 
   -- display the scene
-  GL.swapBuffers
+  GLUT.swapBuffers
+
+  --GLUT.matrixMode $= GLUT.Modelview 0
 
 
 -------------------------------------------------------------
@@ -85,12 +94,12 @@ idle angle delta = do
   angle $= a + d
   
   -- get new time (to calculate FPS)
-  {--tnew <- get GL.elapsedTime
+  {--tnew <- get GLUT.elapsedTime
   tdiff <- tnew - told
   told <- tnew
 
   print tdiff
 --}
-  GL.postRedisplay Nothing
+  GLUT.postRedisplay Nothing
 
 

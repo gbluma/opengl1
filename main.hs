@@ -1,14 +1,14 @@
 import Graphics.Rendering.OpenGL
-import Graphics.UI.GLUT as GL
+import Graphics.UI.GLUT as GLUT
+import Data.IORef (newIORef)
+
 import Bindings
 import Display
-import Data.IORef
-
 
 
 -------------------------------------------------------------
 main = do
-  (progname, _) <- getArgsAndInitialize
+  (progname, _) <- GLUT.getArgsAndInitialize
 
   -- state variables, holy cow!
   angle    <- newIORef (0.0::GLfloat)
@@ -16,19 +16,19 @@ main = do
   position <- newIORef (0.0::GLfloat, 0.0)
 
   window <- initGL
-  GL.depthFunc $= Just Less
+  GLUT.depthFunc $= Just Less
 
   -- register a display callback (found in Display.hs)
-  GL.displayCallback $= (display angle position)
+  GLUT.displayCallback $= (display angle position)
 
   -- register a reshape callback (found in Bindings.hs)
-  GL.reshapeCallback $= Just reshape
+  GLUT.reshapeCallback $= Just reshape
   
   -- setup keyboard and mouse (found in Bindings.hs)
-  GL.keyboardMouseCallback $= Just (keyboardMouse window delta position)
+  GLUT.keyboardMouseCallback $= Just (keyboardMouse window delta position)
 
-  GL.idleCallback $= Just (idle angle delta)
+  GLUT.idleCallback $= Just (idle angle delta)
   
-  GL.mainLoop
+  GLUT.mainLoop
 
 
