@@ -47,6 +47,24 @@ initGL = do
   return window
 
 -------------------------------------------------------------
+renderAxis = do
+  GLUT.lighting $= Disabled
+  renderPrimitive Lines $ do
+
+    color  $ (Color3 (1.0::GLfloat) 0 0)
+    vertex $ (Vertex3 0 0 (0::GLfloat) )
+    vertex $ (Vertex3 0 0 (1.0::GLfloat))
+
+    color  $ (Color3 0 (1.0::GLfloat) 0)
+    vertex $ (Vertex3 0 0 (0::GLfloat) )
+    vertex $ (Vertex3 0 (1.0::GLfloat) 0)
+
+    color  $ (Color3 0 0 (1.0::GLfloat))
+    vertex $ (Vertex3 0 0 (0::GLfloat) )
+    vertex $ (Vertex3 (1.0::GLfloat) 0 0)
+  GLUT.lighting $= Enabled
+
+-------------------------------------------------------------
 display angle position = do
 
   -- clear the scene
@@ -62,6 +80,8 @@ display angle position = do
 
   GLUT.preservingMatrix $ do
 
+    renderAxis
+
     -- set the color
     GLUT.color $ Color3 (0.3::GLfloat) (0.7::GLfloat) (0.3::GLfloat)
 
@@ -73,6 +93,7 @@ display angle position = do
     -- cube (0.2::GLfloat)
     renderObject Solid (Teapot 0.2)
 
+  GLUT.lighting $= Disabled
   --GLUT.matrixMode $= GLUT.Projection
   GLUT.loadIdentity
   GLUT.color $ Color3 1 1 (1::GLfloat)
@@ -83,6 +104,7 @@ display angle position = do
   GLUT.swapBuffers
 
   --GLUT.matrixMode $= GLUT.Modelview 0
+  GLUT.lighting $= Enabled
 
 
 -------------------------------------------------------------
