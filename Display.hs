@@ -9,6 +9,22 @@ import Graphics.GLUtil
 --vertex4 :: Float -> Float -> Float -> Float -> GLUT.Vertex4 Float
 --vertex4 = GLUT.Vertex4 
 
+-------------------------------------------------------------
+makeTexture :: FilePath -> IO TextureObject
+makeTexture filename =
+  -- read texture from file
+  do (width, height, pixels) <- readTGA filename
+
+     -- tranlate file data into texture
+     texture <- loadTexture $ texInfo width height TexBGR pixels
+     textureFilter   Texture2D   $= ((Linear', Nothing), Linear')
+     textureWrapMode Texture2D S $= (Mirrored, ClampToEdge)
+     textureWrapMode Texture2D T $= (Mirrored, ClampToEdge)
+     return texture
+
+
+
+-------------------------------------------------------------
 initGL = do 
   GLUT.initialDisplayMode $= [DoubleBuffered, WithDepthBuffer]
   GLUT.initialWindowSize $= GLUT.Size 580 400

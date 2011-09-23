@@ -18,3 +18,11 @@
 * Refactor code so it is idiomatic:
   - Possibly imitate (http://www.haskell.org/haskellwiki/OpenGLTutorial2)
   - Consider using reactive-glut for performance
+
+
+
+
+# Bugs:
+
+* Text is not on orthogonal plane, but rather in 3d scene projection
+* 
