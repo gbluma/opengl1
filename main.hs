@@ -28,7 +28,8 @@ main = do
   GLUT.keyboardMouseCallback $= Just (keyboardMouse window delta position)
 
   GLUT.idleCallback $= Just (idle angle delta)
-  
+
+  -- enter infinite loop
   GLUT.mainLoop
 
 
