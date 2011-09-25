@@ -1,7 +1,7 @@
 module Bindings (idle,display, reshape, keyboardMouse) where
 
 import Graphics.Rendering.OpenGL
-import Graphics.UI.GLUT as GL
+import Graphics.UI.GLUT
 import Display
 import System.Exit
 
@@ -9,12 +9,12 @@ import GameState
 
 -------------------------------------------------------------
 reshape s@(Size w h) = do
-  GL.viewport $= (Position 0 0, s)
+  viewport $= (Position 0 0, s)
   
-  GL.matrixMode $= GL.Projection
-  GL.loadIdentity
-  GL.perspective 45 ((fromIntegral w)/(fromIntegral h)) 0.02 130
-  GL.matrixMode $= GL.Modelview 0
+  matrixMode $= Projection
+  loadIdentity
+  perspective 45 ((fromIntegral w)/(fromIntegral h)) 0.02 130
+  matrixMode $= Modelview 0
 
 -------------------------------------------------------------
 keyboardAct _ gameState (Char ' ') Down = do
@@ -73,7 +73,7 @@ keyboardAct _ gameState (Char 'x') Down = do
 -------------------------------------------------------------
 keyboardAct window _ (Char '\ESC') Down = do
   -- Exit via escape button
-  GL.destroyWindow window
+  destroyWindow window
   exitWith ExitSuccess
 
 -------------------------------------------------------------

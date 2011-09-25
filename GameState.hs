@@ -14,7 +14,7 @@ data GameState = GameState {
 }
 
 -------------------------------------------------------------
--- makeGameState :: IO GameState
+makeGameState :: IO GameState
 makeGameState = do
   -- initialize values
   angle'    <- newIORef (0.0::GLfloat) 
@@ -31,19 +31,8 @@ makeGameState = do
     fps      = fps'
   }
 
-{-------------------------------------------------------------
--- updateFPS :: GameState -> Int -> ()
-updateFPS gameState newTime = do
-
-  prevTime <- get (time gameState)
-  diff     <- fromIntegral $ newTime - prevTime
-
-  --(time gameState) $= newTime
-  --(fps gameState)  $= truncate (1000.0 / diff)
-  
-  Nothing
---}
-
+-------------------------------------------------------------
+updateFPS :: GameState -> IO ()
 updateFPS gameState = do
 
   -- TODO: move FPS code inside GameState module
