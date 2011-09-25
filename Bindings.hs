@@ -5,6 +5,8 @@ import Graphics.UI.GLUT as GL
 import Display
 import System.Exit
 
+import GameState
+
 -------------------------------------------------------------
 reshape s@(Size w h) = do
   GL.viewport $= (Position 0 0, s)
@@ -15,68 +17,68 @@ reshape s@(Size w h) = do
   GL.matrixMode $= GL.Modelview 0
 
 -------------------------------------------------------------
-keyboardAct _ delta position (Char ' ') Down = do
+keyboardAct _ gameState (Char ' ') Down = do
   -- flip the direction of rotation
-  delta' <- get delta
-  delta $= -delta'
+  delta' <- get (delta gameState)
+  (delta gameState) $= -delta'
 
 -------------------------------------------------------------
-keyboardAct _ delta position (Char '=') Down = do
+keyboardAct _ gameState (Char '=') Down = do
   -- speed up rotation
-  delta' <- get delta
-  delta $= 2*delta'
+  delta' <- get (delta gameState)
+  (delta gameState) $= 2*delta'
 
 -------------------------------------------------------------
-keyboardAct _ delta position (Char '-') Down = do
+keyboardAct _ gameState (Char '-') Down = do
   -- slow down rotation
-  delta' <- get delta
-  delta $= delta'/2
+  delta' <- get (delta gameState)
+  (delta gameState) $= delta'/2
 
 -------------------------------------------------------------
-keyboardAct _ delta position (SpecialKey KeyLeft) Down = do
+keyboardAct _ gameState (SpecialKey KeyLeft) Down = do
   -- move left (reduce x component)
-  (x,y,z) <- get position
-  position $= (x-0.02,y,z)
+  (x,y,z) <- get (pos gameState)
+  (pos gameState) $= (x-0.02,y,z)
 
 -------------------------------------------------------------
-keyboardAct _ delta position (SpecialKey KeyRight) Down = do
+keyboardAct _ gameState (SpecialKey KeyRight) Down = do
   -- move right (boost x component)
-  (x,y,z) <- get position
-  position $= (x+0.02,y,z)
+  (x,y,z) <- get (pos gameState)
+  (pos gameState) $= (x+0.02,y,z)
 
 -------------------------------------------------------------
-keyboardAct _ delta position (SpecialKey KeyUp) Down = do
+keyboardAct _ gameState (SpecialKey KeyUp) Down = do
   -- move up (boost y component)
-  (x,y,z) <- get position
-  position $= (x,y+0.02,z)
+  (x,y,z) <- get (pos gameState)
+  (pos gameState) $= (x,y+0.02,z)
 
 -------------------------------------------------------------
-keyboardAct _ delta position (SpecialKey KeyDown) Down = do
+keyboardAct _ gameState (SpecialKey KeyDown) Down = do
   -- move down (reduce y component)
-  (x,y,z) <- get position
-  position $= (x,y-0.02,z)
+  (x,y,z) <- get (pos gameState)
+  (pos gameState) $= (x,y-0.02,z)
 
 -------------------------------------------------------------
-keyboardAct _ delta position (Char 'z') Down = do
+keyboardAct _ gameState (Char 'z') Down = do
   -- move up (boost z component)
-  (x,y,z) <- get position
-  position $= (x,y,z+0.02)
+  (x,y,z) <- get (pos gameState)
+  (pos gameState) $= (x,y,z+0.02)
 
 -------------------------------------------------------------
-keyboardAct _ delta position (Char 'x') Down = do
+keyboardAct _ gameState (Char 'x') Down = do
   -- move down (reduce z component)
-  (x,y,z) <- get position
-  position $= (x,y,z-0.02)
+  (x,y,z) <- get (pos gameState)
+  (pos gameState) $= (x,y,z-0.02)
 
 -------------------------------------------------------------
-keyboardAct window _ _ (Char '\ESC') Down = do
+keyboardAct window _ (Char '\ESC') Down = do
   -- Exit via escape button
   GL.destroyWindow window
   exitWith ExitSuccess
 
 -------------------------------------------------------------
-keyboardAct _ _ _ _ _ = return () 
+keyboardAct _ _ _ _ = return () 
 
-keyboardMouse window delta pos key state modifiers position = do
-  keyboardAct window delta pos key state
+keyboardMouse window gameState key state modifiers position = do
+  keyboardAct window gameState key state
 

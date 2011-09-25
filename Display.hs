@@ -2,12 +2,11 @@ module Display (initGL,display,idle) where
 
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT as GLUT
+import Control.Applicative
 import Data.IORef
 import TGA
 import Graphics.GLUtil
-
---vertex4 :: Float -> Float -> Float -> Float -> GLUT.Vertex4 Float
---vertex4 = GLUT.Vertex4 
+import GameState
 
 -------------------------------------------------------------
 makeTexture :: FilePath -> IO TextureObject
@@ -82,14 +81,18 @@ renderAxis = do
 
 
 -------------------------------------------------------------
-display angle position = do
+display :: GameState -> IO ()
+display gameState = do
+
+  
 
   -- clear the scene
   GLUT.clear [ GLUT.ColorBuffer, GLUT.DepthBuffer ]
   
   -- load our dynamic data
   (_, GLUT.Size xres yres) <- get GLUT.viewport
-  (x,y,z) <- get position
+  (x,y,z) <- get (pos gameState)
+  fps <- get (fps gameState)
   
   GLUT.perspective 45 ((fromIntegral xres)/(fromIntegral yres)) 0.1 100
   GLUT.matrixMode $= GLUT.Modelview 0
@@ -101,7 +104,7 @@ display angle position = do
   
   GLUT.preservingMatrix $ do
 
-    angle <- get angle
+    angle <- get (angle gameState)
     GLUT.rotate angle $ Vector3 (1::GLfloat) 0 (1::GLfloat)
     GLUT.scale 1 1 (1::GLfloat)
     
@@ -110,7 +113,7 @@ display angle position = do
     GLUT.color $ Color3 (0.3::GLfloat) (0.7::GLfloat) (0.3::GLfloat)
 
     -- set the tranlation
-    (x,y,z) <- get position
+    (x,y,z) <- get (pos gameState)
     GLUT.translate $ Vector3 x y z
     
     renderObject Solid (Teapot 0.2)
@@ -122,7 +125,7 @@ display angle position = do
 
   GLUT.color $ Color3 1 1 (1::GLfloat)
   GLUT.currentRasterPosition $= Vertex4  (-0.98) (0.92) 0 1
-  GLUT.renderString GLUT.Fixed8By13 $  "FPS: x" 
+  GLUT.renderString GLUT.Fixed8By13 $  "FPS: " ++ (show fps)
 
 
   GLUT.flush
@@ -130,20 +133,21 @@ display angle position = do
 
 
 -------------------------------------------------------------
-idle angle delta = do
+idle :: GameState -> IO ()
+idle gameState = do
   
   -- update state vars for control (todo: refactor)
-  a <- get angle
-  d <- get delta
-  angle $= a + d
-  
-  -- get new time (to calculate FPS)
-  {--tnew <- get GLUT.elapsedTime
-  tdiff <- tnew - told
-  told <- tnew
+  a <- get (angle gameState)
+  d <- get (delta gameState)
+  angle gameState $= a + d
+ 
+  -- TODO: move this code inside GameState module
+  prevTime <- get (time gameState)
+  currTime <- get (GLUT.elapsedTime)
+  time gameState $= currTime
+  fps  gameState $= (currTime - prevTime)  
+  -- TODO: for whatever reason, division by 1000 (for fps) causes this to need a monad.
 
-  print tdiff
---}
   GLUT.postRedisplay Nothing
 
 
