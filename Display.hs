@@ -80,55 +80,53 @@ renderAxis = do
     vertex $ (Vertex3 (1.0::GLfloat) 0 0)
   GLUT.lighting $= Enabled
 
+
 -------------------------------------------------------------
 display angle position = do
 
   -- clear the scene
   GLUT.clear [ GLUT.ColorBuffer, GLUT.DepthBuffer ]
-
-  -- provide a relative rendering context
+  
+  -- load our dynamic data
+  (_, GLUT.Size xres yres) <- get GLUT.viewport
+  (x,y,z) <- get position
+  
+  GLUT.perspective 45 ((fromIntegral xres)/(fromIntegral yres)) 0.1 100
+  GLUT.matrixMode $= GLUT.Modelview 0
+  GLUT.lighting $= Enabled
   GLUT.loadIdentity
 
-  a <- get angle
-  GLUT.translate $ Vector3 (0.0::GLfloat) (0.0::GLfloat) (-1::GLfloat)
-  GLUT.rotate a $ Vector3 (1::GLfloat) 0 (1::GLfloat)
-  GLUT.scale 1 1 (1::GLfloat)
-
+  -- move the camera back one unit
+  GLUT.translate $ Vector3 0 0 (-1::GLfloat) 
+  
   GLUT.preservingMatrix $ do
 
+    angle <- get angle
+    GLUT.rotate angle $ Vector3 (1::GLfloat) 0 (1::GLfloat)
+    GLUT.scale 1 1 (1::GLfloat)
+    
     renderAxis
 
-    -- set the color
     GLUT.color $ Color3 (0.3::GLfloat) (0.7::GLfloat) (0.3::GLfloat)
 
     -- set the tranlation
     (x,y,z) <- get position
     GLUT.translate $ Vector3 x y z
-
-
-    -- finally apply the mesh to the above transforms
-    -- cube (0.2::GLfloat)
+    
     renderObject Solid (Teapot 0.2)
 
-
-
-  -- get size of screen and setup 2d rendering context
-  (_, GLUT.Size xres yres) <- GLUT.get GLUT.viewport  
+  GLUT.matrixMode $= GLUT.Projection
+  GLUT.loadIdentity
   GLUT.ortho2D 0 0 (fromIntegral xres) (fromIntegral yres)
   GLUT.lighting $= Disabled
 
-  --GLUT.matrixMode $= GLUT.Projection
-  GLUT.loadIdentity
   GLUT.color $ Color3 1 1 (1::GLfloat)
-  (x,y,z) <- get position
-  GLUT.currentRasterPosition $= Vertex4  x y z 1
-  GLUT.renderString GLUT.Fixed8By13 $  "Tslkfjsdlfklksdlsdlksd sl dsfjld sljkdf jklsdfljkdfs ljds jlsdfjljkl ds" 
+  GLUT.currentRasterPosition $= Vertex4  (-0.98) (0.92) 0 1
+  GLUT.renderString GLUT.Fixed8By13 $  "FPS: x" 
 
-  -- display the scene
+
+  GLUT.flush
   GLUT.swapBuffers
-
-  --GLUT.matrixMode $= GLUT.Modelview 0
-  GLUT.lighting $= Enabled
 
 
 -------------------------------------------------------------
