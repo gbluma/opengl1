@@ -6,6 +6,7 @@ import Control.Applicative
 import Data.IORef
 import Graphics.GLUtil
 import GameState
+import Cube
 
 
 -------------------------------------------------------------
@@ -102,7 +103,8 @@ display gameState = do
     (x,y,z) <- get (pos gameState)
     translate $ Vector3 x y z
     
-    renderObject Solid (Teapot 0.2)
+    --renderObject Solid (Cube 0.2)
+    drawCube 0.2
 
   matrixMode $= Projection
   loadIdentity

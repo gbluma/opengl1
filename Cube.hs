@@ -3,48 +3,45 @@ module Cube where
 import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
--------------------------------------------------------------
-cube w = do
-  renderPrimitive Quads $ do
 
-    -- draw right face
-    color $ (Color3 (1.0::GLfloat) 0 0)
-    vertex $ (Vertex3   w    w    w  )
-    vertex $ (Vertex3   w    w  (-w) )
-    vertex $ (Vertex3   w  (-w) (-w) )
-    vertex $ (Vertex3   w  (-w)   w  )
+drawFace :: Normal3 GLfloat -> Vertex3 GLfloat -> Vertex3 GLfloat
+         -> Vertex3 GLfloat -> Vertex3 GLfloat -> IO ()
+drawFace p q r s t = do
+   let texCoord2f = texCoord :: TexCoord2 GLfloat -> IO ()
+   normal p
+   texCoord2f (TexCoord2 1 1)
+   vertex q
+   texCoord2f (TexCoord2 0 1)
+   vertex r
+   texCoord2f (TexCoord2 0 0)
+   vertex s
+   texCoord2f (TexCoord2 1 0)
+   vertex t
 
-    -- draw back face
-    color $ (Color3 (0::GLfloat) 0 1)
-    vertex $ (Vertex3   w    w  (-w) )
-    vertex $ (Vertex3 (-w)   w  (-w) )
-    vertex $ (Vertex3 (-w) (-w) (-w) )
-    vertex $ (Vertex3   w  (-w) (-w) )
+drawCube :: GLfloat -> IO ()
+drawCube size = do
+   let
+       a = Vertex3   size    size    size
+       b = Vertex3   size    size  (-size)
+       c = Vertex3   size  (-size) (-size)
+       d = Vertex3   size  (-size)   size
+       e = Vertex3 (-size)   size    size
+       f = Vertex3 (-size)   size  (-size)
+       g = Vertex3 (-size) (-size) (-size)
+       h = Vertex3 (-size) (-size)   size
 
-    -- draw left face
-    color $ (Color3 (1::GLfloat) 0 1)
-    vertex $ (Vertex3 (-w)   w  (-w) )
-    vertex $ (Vertex3 (-w)   w    w  )
-    vertex $ (Vertex3 (-w) (-w)   w  )
-    vertex $ (Vertex3 (-w) (-w) (-w) )
+       i = Normal3   1    0    0
+       k = Normal3 (-1)   0    0
+       l = Normal3   0    0  (-1)
+       m = Normal3   0    0    1
+       n = Normal3   0    1    0
+       o = Normal3   0  (-1)   0
 
-    -- draw front face
-    color $ (Color3 (0.3::GLfloat) 0.2 0.1)
-    vertex $ (Vertex3 (-w)   w    w  )
-    vertex $ (Vertex3   w    w    w  )
-    vertex $ (Vertex3   w  (-w)   w  )
-    vertex $ (Vertex3 (-w) (-w)   w  )
+   renderPrimitive Quads $ do
+      drawFace i d c b a
+      drawFace k g h e f
+      drawFace l c g f b
+      drawFace m h d a e
+      drawFace n e a b f
+      drawFace o g c d h
 
-    -- draw top face
-    color $ (Color3 (0::GLfloat) 1 1)
-    vertex $ (Vertex3   w    w    w  )
-    vertex $ (Vertex3 (-w)   w    w  )
-    vertex $ (Vertex3 (-w)   w  (-w) )
-    vertex $ (Vertex3   w    w  (-w) )
-
-    -- draw bottom face
-    color $ (Color3 (1::GLfloat) 1 0.5)
-    vertex $ (Vertex3 (-w) (-w)   w  )
-    vertex $ (Vertex3 (-w) (-w) (-w) )
-    vertex $ (Vertex3   w  (-w) (-w) )
-    vertex $ (Vertex3   w  (-w)   w  )
