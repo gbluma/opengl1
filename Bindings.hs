@@ -11,7 +11,7 @@ reshape s@(Size w h) = do
   
   GL.matrixMode $= GL.Projection
   GL.loadIdentity
-  GL.perspective 45 ((fromIntegral w)/(fromIntegral h)) 0.1 130
+  GL.perspective 45 ((fromIntegral w)/(fromIntegral h)) 0.02 130
   GL.matrixMode $= GL.Modelview 0
 
 -------------------------------------------------------------
@@ -35,26 +35,38 @@ keyboardAct _ delta position (Char '-') Down = do
 -------------------------------------------------------------
 keyboardAct _ delta position (SpecialKey KeyLeft) Down = do
   -- move left (reduce x component)
-  (x,y) <- get position
-  position $= (x-0.1,y)
+  (x,y,z) <- get position
+  position $= (x-0.02,y,z)
 
 -------------------------------------------------------------
 keyboardAct _ delta position (SpecialKey KeyRight) Down = do
   -- move right (boost x component)
-  (x,y) <- get position
-  position $= (x-0.1,y)
+  (x,y,z) <- get position
+  position $= (x+0.02,y,z)
 
 -------------------------------------------------------------
 keyboardAct _ delta position (SpecialKey KeyUp) Down = do
   -- move up (boost y component)
-  (x,y) <- get position
-  position $= (x,y+0.1)
+  (x,y,z) <- get position
+  position $= (x,y+0.02,z)
 
 -------------------------------------------------------------
 keyboardAct _ delta position (SpecialKey KeyDown) Down = do
   -- move down (reduce y component)
-  (x,y) <- get position
-  position $= (x,y-0.1)
+  (x,y,z) <- get position
+  position $= (x,y-0.02,z)
+
+-------------------------------------------------------------
+keyboardAct _ delta position (Char 'z') Down = do
+  -- move up (boost z component)
+  (x,y,z) <- get position
+  position $= (x,y,z+0.02)
+
+-------------------------------------------------------------
+keyboardAct _ delta position (Char 'x') Down = do
+  -- move down (reduce z component)
+  (x,y,z) <- get position
+  position $= (x,y,z-0.02)
 
 -------------------------------------------------------------
 keyboardAct window _ _ (Char '\ESC') Down = do

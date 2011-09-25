@@ -102,18 +102,26 @@ display angle position = do
     GLUT.color $ Color3 (0.3::GLfloat) (0.7::GLfloat) (0.3::GLfloat)
 
     -- set the tranlation
-    GLUT.translate $ Vector3 (0.0::GLfloat) (0.0::GLfloat) (-0.0::GLfloat)
+    (x,y,z) <- get position
+    GLUT.translate $ Vector3 x y z
 
 
     -- finally apply the mesh to the above transforms
     -- cube (0.2::GLfloat)
     renderObject Solid (Teapot 0.2)
 
+
+
+  -- get size of screen and setup 2d rendering context
+  (_, GLUT.Size xres yres) <- GLUT.get GLUT.viewport  
+  GLUT.ortho2D 0 0 (fromIntegral xres) (fromIntegral yres)
   GLUT.lighting $= Disabled
+
   --GLUT.matrixMode $= GLUT.Projection
   GLUT.loadIdentity
   GLUT.color $ Color3 1 1 (1::GLfloat)
-  GLUT.currentRasterPosition $= Vertex4  (-0.1) 0.1 (-0.3) 1
+  (x,y,z) <- get position
+  GLUT.currentRasterPosition $= Vertex4  x y z 1
   GLUT.renderString GLUT.Fixed8By13 $  "Tslkfjsdlfklksdlsdlksd sl dsfjld sljkdf jklsdfljkdfs ljds jlsdfjljkl ds" 
 
   -- display the scene

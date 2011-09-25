@@ -13,7 +13,7 @@ main = do
   -- state variables, holy cow!
   angle    <- newIORef (0.0::GLfloat)
   delta    <- newIORef (0.1::GLfloat)
-  position <- newIORef (0.0::GLfloat, 0.0)
+  position <- newIORef (0.0::GLfloat, 0.0, 0.0)
 
   window <- initGL
   GLUT.depthFunc $= Just Less
