@@ -4,23 +4,8 @@ import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 import Control.Applicative
 import Data.IORef
-import TGA
 import Graphics.GLUtil
 import GameState
-
--------------------------------------------------------------
-makeTexture :: FilePath -> IO TextureObject
-makeTexture filename =
-  -- read texture from file
-  do (width, height, pixels) <- readTGA filename
-
-     -- tranlate file data into texture
-     texture <- loadTexture $ texInfo width height TexBGR pixels
-     textureFilter   Texture2D   $= ((Linear', Nothing), Linear')
-     textureWrapMode Texture2D S $= (Mirrored, ClampToEdge)
-     textureWrapMode Texture2D T $= (Mirrored, ClampToEdge)
-     return texture
-
 
 
 -------------------------------------------------------------
@@ -53,6 +38,7 @@ initGL = do
 
   -- setup lighting
   shadeModel $= Smooth
+  blend      $= Enabled 
   materialSpecular Front $= Color4 0.7 0.75 0.7 0.7
   materialShininess Front $= 127
 
@@ -68,17 +54,17 @@ renderAxis = do
   lighting $= Disabled
   renderPrimitive Lines $ do
 
-    color  $ (Color3 (1.0::GLfloat) 0 0)
-    vertex $ (Vertex3 0 0 (0::GLfloat) )
-    vertex $ (Vertex3 0 0 (1.0::GLfloat))
+    color  $ Color3  (1.0::GLfloat) 0 0
+    vertex $ Vertex3 0 0 (0.0::GLfloat) 
+    vertex $ Vertex3 0 0 (1.0::GLfloat)
 
-    color  $ (Color3 0 (1.0::GLfloat) 0)
-    vertex $ (Vertex3 0 0 (0::GLfloat) )
-    vertex $ (Vertex3 0 (1.0::GLfloat) 0)
+    color  $ Color3  0 (1.0::GLfloat) 0
+    vertex $ Vertex3 0 0 (0.0::GLfloat) 
+    vertex $ Vertex3 0 (1.0::GLfloat) 0
 
-    color  $ (Color3 0 0 (1.0::GLfloat))
-    vertex $ (Vertex3 0 0 (0::GLfloat) )
-    vertex $ (Vertex3 (1.0::GLfloat) 0 0)
+    color  $ Color3  0 0 (1.0::GLfloat)
+    vertex $ Vertex3 0 0 (0.0::GLfloat) 
+    vertex $ Vertex3 (1.0::GLfloat) 0 0
   lighting $= Enabled
 
 
