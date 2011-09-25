@@ -1,7 +1,7 @@
 module GameState where
 
 import Graphics.Rendering.OpenGL
-import Graphics.UI.GLUT (Window)
+import Graphics.UI.GLUT (Window, elapsedTime)
 import Data.IORef (IORef, newIORef)
 
 -------------------------------------------------------------
@@ -43,3 +43,13 @@ updateFPS gameState newTime = do
   
   Nothing
 --}
+
+updateFPS gameState = do
+
+  -- TODO: move FPS code inside GameState module
+  prevTime <- get (time gameState)
+  currTime <- get (elapsedTime)
+  let diff =  (fromIntegral (currTime - prevTime))
+  time gameState $= currTime
+  fps  gameState $= truncate (1000.0 / diff)
+

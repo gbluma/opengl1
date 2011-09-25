@@ -141,12 +141,8 @@ idle gameState = do
   d <- get (delta gameState)
   angle gameState $= a + d
  
-  -- TODO: move this code inside GameState module
-  prevTime <- get (time gameState)
-  currTime <- get (GLUT.elapsedTime)
-  time gameState $= currTime
-  fps  gameState $= (currTime - prevTime)  
-  -- TODO: for whatever reason, division by 1000 (for fps) causes this to need a monad.
+  -- update the FPS display
+  updateFPS gameState
 
   GLUT.postRedisplay Nothing
 
