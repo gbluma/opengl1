@@ -46,6 +46,9 @@ initGL = do
   lighting $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 2 2 2 0
+  
+  -- setup texturing
+  texture Texture2D $= Enabled 
 
   return window
 
@@ -81,8 +84,8 @@ display gameState = do
   (x,y,z) <- get (pos gameState)
   fps <- get (fps gameState)
   
-  perspective 45 ((fromIntegral xres)/(fromIntegral yres)) 0.1 100
-  matrixMode $= Modelview 0
+  -- perspective 45 ((fromIntegral xres)/(fromIntegral yres)) 0.1 100
+  -- matrixMode $= Modelview 0
   lighting $= Enabled
   loadIdentity
 
@@ -103,10 +106,9 @@ display gameState = do
     (x,y,z) <- get (pos gameState)
     translate $ Vector3 x y z
     
-    --renderObject Solid (Cube 0.2)
-    drawCube 0.2
+    renderObject Solid (Teapot 0.2)
 
-  matrixMode $= Projection
+  -- matrixMode $= Projection
   loadIdentity
   ortho2D 0 0 (fromIntegral xres) (fromIntegral yres)
   lighting $= Disabled
