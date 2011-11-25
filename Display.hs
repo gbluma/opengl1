@@ -123,7 +123,7 @@ display gameState = do
     textureBinding Texture2D $= (textures !! 1)
     translate $ Vector3 (0.5::GLfloat) y z
     -- TODO: set the texture
-    drawCube 0.1
+    drawCube 0.2
 
   -- matrixMode $= Projection
   loadIdentity
