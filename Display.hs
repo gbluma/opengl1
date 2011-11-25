@@ -47,6 +47,8 @@ initGL gameState = do
   lighting $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 2 2 2 0
+  light (Light 1) $= Enabled
+  position (Light 1) $= Vertex4 (-2) (-2) 2 0
   
   -- setup texturing
   texture Texture2D $= Enabled 
@@ -58,9 +60,11 @@ initGL gameState = do
 -------------------------------------------------------------
 renderAxis :: IO ()
 renderAxis = do
+  -- disable lighting/texturing for bright lines
   lighting $= Disabled
-  renderPrimitive Lines $ do
+  texture Texture2D $= Disabled
 
+  renderPrimitive Lines $ do
     color  $ Color3  (1.0::GLfloat) 0 0
     vertex $ Vertex3 0 0 (0.0::GLfloat) 
     vertex $ Vertex3 0 0 (1.0::GLfloat)
@@ -72,7 +76,10 @@ renderAxis = do
     color  $ Color3  0 0 (1.0::GLfloat)
     vertex $ Vertex3 0 0 (0.0::GLfloat) 
     vertex $ Vertex3 (1.0::GLfloat) 0 0
+
+  -- re-enable texturing and lighting now.
   lighting $= Enabled
+  texture Texture2D $= Enabled 
 
 
 -------------------------------------------------------------
@@ -116,7 +123,7 @@ display gameState = do
     textureBinding Texture2D $= (textures !! 1)
     translate $ Vector3 (0.5::GLfloat) y z
     -- TODO: set the texture
-    drawCube 0.2
+    drawCube 0.1
 
   -- matrixMode $= Projection
   loadIdentity
