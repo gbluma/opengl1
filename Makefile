@@ -1,5 +1,5 @@
 
-all:
+build:
 	ghc *.hs -H30m -O2 -o opengl1
 
 prod:
@@ -9,5 +9,5 @@ prod:
 clean:
 	rm *.o *.hi ./opengl1
 
-run:
+test:
 	./opengl1

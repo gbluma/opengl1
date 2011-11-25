@@ -7,11 +7,12 @@ import Data.IORef
 import Graphics.GLUtil
 import GameState
 import Cube
+import Textures
 
 
 -------------------------------------------------------------
-initGL :: IO Window
-initGL = do 
+initGL:: GameState -> IO Window 
+initGL gameState = do 
   initialDisplayMode $= [DoubleBuffered, WithDepthBuffer]
   initialWindowSize $= Size 580 400
   initialWindowPosition $= Position 20 20
@@ -49,6 +50,7 @@ initGL = do
   
   -- setup texturing
   texture Texture2D $= Enabled 
+  -- TODO: textures gameState $= getAndCreateTextures ["blocks11b"]
 
   return window
 
@@ -107,6 +109,10 @@ display gameState = do
     translate $ Vector3 x y z
     
     renderObject Solid (Teapot 0.2)
+    
+    translate $ Vector3 (0.5::GLfloat) y z
+    -- TODO: set the texture
+    drawCube 0.2
 
   -- matrixMode $= Projection
   loadIdentity

@@ -13,7 +13,7 @@ main = do
 
   gameState <- makeGameState
 
-  window <- initGL
+  window <- initGL gameState
   depthFunc $= Just Less
 
   -- register a display callback (found in Display.hs)
