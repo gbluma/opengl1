@@ -8,6 +8,7 @@ import Graphics.GLUtil
 import GameState
 import Cube
 import Textures
+import GameObject
 
 
 -------------------------------------------------------------
@@ -125,6 +126,10 @@ display gameState = do
     -- TODO: set the texture
     drawCube 0.2
 
+
+  gameObject <- get (gameObject gameState)
+  renderGameObject gameState gameObject 
+
   -- matrixMode $= Projection
   loadIdentity
   ortho2D 0 0 (fromIntegral xres) (fromIntegral yres)
@@ -154,3 +159,25 @@ idle gameState = do
   postRedisplay Nothing
 
 
+-------------------------------------------------------------
+renderGameObject :: GameState -> GameObject -> IO ()
+renderGameObject gameState gameObject = do
+  
+  textures <- get (textures gameState)
+  (x,y,z) <- get (location gameObject)
+
+  preservingMatrix $ do
+
+    --angle <- get (angle gameState)
+    --rotate angle $ Vector3 (1::GLfloat) 0 (1::GLfloat)
+    scale 1 1 (1::GLfloat)
+    
+    --renderAxis
+
+    color $ Color3 (0.3::GLfloat) (0.7::GLfloat) (0.3::GLfloat)
+
+    -- set the tranlation
+    translate $ Vector3 x y z
+    
+    textureBinding Texture2D $= (textures !! 0)
+    renderObject Solid (Teapot 0.2)

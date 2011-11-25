@@ -4,6 +4,7 @@ import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT (Window, elapsedTime)
 import Data.IORef (IORef, newIORef)
 import Textures 
+import GameObject
 
 -------------------------------------------------------------
 data GameState = GameState { 
@@ -12,7 +13,8 @@ data GameState = GameState {
   pos      :: IORef (GLfloat, GLfloat, GLfloat),
   time     :: IORef Int,
   fps      :: IORef Int,
-  textures :: IORef [Maybe TextureObject]
+  textures :: IORef [Maybe TextureObject],
+  gameObject :: IORef GameObject
 }
 
 -------------------------------------------------------------
@@ -25,18 +27,22 @@ makeGameState = do
   pos'      <- newIORef (0.0::GLfloat, 0.0, 0.0)
   time'     <- newIORef (0::Int)
   fps'      <- newIORef (0::Int)
+  
+  gameObject' <- makeGameObject
+  gameObject'' <- newIORef gameObject'
 
   -- TODO: there should be a way to combine these two lines
   textures' <- getAndCreateTextures [""]
   textures'' <- newIORef textures'
-   
+
   return $ GameState {
     angle    = angle',
     delta    = delta',
     pos      = pos',
     time     = time',
     fps      = fps',
-    textures = textures''
+    textures = textures'',
+    gameObject = gameObject''
   }
 
 -------------------------------------------------------------
