@@ -50,7 +50,8 @@ initGL gameState = do
   
   -- setup texturing
   texture Texture2D $= Enabled 
-  -- TODO: textures gameState $= getAndCreateTextures ["blocks11b"]
+  texs <- getAndCreateTextures ["blocks11b", "texture2"]
+  textures gameState $= texs
 
   return window
 
@@ -85,6 +86,7 @@ display gameState = do
   (_, Size xres yres) <- get viewport
   (x,y,z) <- get (pos gameState)
   fps <- get (fps gameState)
+  textures <- get (textures gameState)
   
   -- perspective 45 ((fromIntegral xres)/(fromIntegral yres)) 0.1 100
   -- matrixMode $= Modelview 0
@@ -108,8 +110,10 @@ display gameState = do
     (x,y,z) <- get (pos gameState)
     translate $ Vector3 x y z
     
+    textureBinding Texture2D $= (textures !! 0)
     renderObject Solid (Teapot 0.2)
     
+    textureBinding Texture2D $= (textures !! 1)
     translate $ Vector3 (0.5::GLfloat) y z
     -- TODO: set the texture
     drawCube 0.2

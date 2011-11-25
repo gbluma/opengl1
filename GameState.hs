@@ -12,19 +12,23 @@ data GameState = GameState {
   pos      :: IORef (GLfloat, GLfloat, GLfloat),
   time     :: IORef Int,
   fps      :: IORef Int,
-  textures :: IORef [GLuint -> TextureObject]
+  textures :: IORef [Maybe TextureObject]
 }
 
 -------------------------------------------------------------
 makeGameState :: IO GameState
 makeGameState = do
+
   -- initialize values
   angle'    <- newIORef (0.0::GLfloat) 
   delta'    <- newIORef (0.1::GLfloat)
   pos'      <- newIORef (0.0::GLfloat, 0.0, 0.0)
   time'     <- newIORef (0::Int)
   fps'      <- newIORef (0::Int)
-  textures' <- newIORef [TextureObject]
+
+  -- TODO: there should be a way to combine these two lines
+  textures' <- getAndCreateTextures [""]
+  textures'' <- newIORef textures'
    
   return $ GameState {
     angle    = angle',
@@ -32,16 +36,22 @@ makeGameState = do
     pos      = pos',
     time     = time',
     fps      = fps',
-    textures = textures'
+    textures = textures''
   }
 
 -------------------------------------------------------------
 updateFPS :: GameState -> IO ()
 updateFPS gameState = do
-  -- TODO: move FPS code inside GameState module
+
+  -- calcualte the differnece in time
   prevTime <- get (time gameState)
   currTime <- get (elapsedTime)
   let diff =  (fromIntegral (currTime - prevTime))
-  time gameState $= currTime
-  fps  gameState $= truncate (1000.0 / diff)
+  let fps' = truncate (1000.0 / diff)
 
+  -- update the global game state
+  time gameState $= currTime
+  fps  gameState $= fps' 
+
+  -- output the fps for debugging
+  putStrLn $ show fps'
