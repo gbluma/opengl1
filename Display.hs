@@ -84,6 +84,31 @@ renderAxis = do
 
 
 -------------------------------------------------------------
+renderFPS :: Int-> Int -> Int -> IO ()
+renderFPS fps screenWidth screenHeight = do
+  -- disable lighting/texturing for bright color
+  lighting $= Disabled
+  texture Texture2D $= Disabled
+
+  -- 20 pixels from the edge
+  let x_margin = 20.0
+  let y_margin = 20.0
+
+  -- assumes bottom left 
+  let x_pos = (-1.0) + (x_margin / (fromIntegral screenWidth) )
+  let y_pos = (-1.0) + (y_margin / (fromIntegral screenHeight) )
+
+  -- do rendering 
+  color $ Color3 1 1 (1::GLfloat)
+  currentRasterPosition $= Vertex4 x_pos y_pos 0 1
+  renderString Fixed8By13 $  "FPS: " ++ (show fps)
+  
+  -- re-enable texturing and lighting now.
+  lighting $= Enabled
+  texture Texture2D $= Enabled 
+
+
+  -------------------------------------------------------------
 display :: GameState -> IO ()
 display gameState = do
 
@@ -96,8 +121,9 @@ display gameState = do
   fps <- get (fps gameState)
   textures <- get (textures gameState)
   
-  -- perspective 45 ((fromIntegral xres)/(fromIntegral yres)) 0.1 100
-  -- matrixMode $= Modelview 0
+  perspective 45 ((fromIntegral xres)/(fromIntegral yres)) 0.1 100
+  matrixMode $= Modelview 0
+  
   lighting $= Enabled
   loadIdentity
 
@@ -130,15 +156,12 @@ display gameState = do
   gameObject <- get (gameObject gameState)
   renderGameObject gameState gameObject 
 
-  -- matrixMode $= Projection
+  -- needed for 2d stuff
+  matrixMode $= Projection 
   loadIdentity
   ortho2D 0 0 (fromIntegral xres) (fromIntegral yres)
-  lighting $= Disabled
 
-  color $ Color3 1 1 (1::GLfloat)
-  currentRasterPosition $= Vertex4  (-0.98) (0.92) 0 1
-  renderString Fixed8By13 $  "FPS: " ++ (show fps)
-
+  renderFPS fps (fromIntegral xres) (fromIntegral yres)
 
   flush
   swapBuffers
