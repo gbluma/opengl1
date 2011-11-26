@@ -49,7 +49,7 @@ initGL gameState = do
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 2 2 2 0
   light (Light 1) $= Enabled
-  position (Light 1) $= Vertex4 (-2) (-2) 2 0
+  position (Light 1) $= Vertex4 (-2) 2 2 0
   
   -- setup texturing
   texture Texture2D $= Enabled 
@@ -108,7 +108,7 @@ display gameState = do
 
     angle <- get (angle gameState)
     rotate angle $ Vector3 (1::GLfloat) 0 (1::GLfloat)
-    scale 1 1 (1::GLfloat)
+    scale 1 1 (1::GLfloat) 
     
     renderAxis
 

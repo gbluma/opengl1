@@ -32,7 +32,7 @@ makeGameState = do
   gameObject'' <- newIORef gameObject'
 
   -- TODO: there should be a way to combine these two lines
-  textures' <- getAndCreateTextures [""]
+  textures' <- getAndCreateTextures []
   textures'' <- newIORef textures'
 
   return $ GameState {
@@ -60,4 +60,4 @@ updateFPS gameState = do
   fps  gameState $= fps' 
 
   -- output the fps for debugging
-  putStrLn $ show fps'
+  -- putStrLn $ show fps'
