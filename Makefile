@@ -1,13 +1,15 @@
+.PHONY: build prod test
 
 build:
-	ghc *.hs -H30m -O2 -o opengl1
+	ghc *.hs -H100m -O2 -o opengl1 -hidir ./build -odir ./build 
 
 prod:
-	ghc *.hs -H30m -O2 -o opengl1
+	make build
 	strip opengl1
 
 clean:
-	rm *.o *.hi ./opengl1
+	rm ./build/* ./opengl1
 
 test:
+	make build
 	./opengl1
