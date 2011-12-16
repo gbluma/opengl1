@@ -1,4 +1,6 @@
 *.swp
 *.o
 *.hi
+./build/*
+tags
 opengl1
