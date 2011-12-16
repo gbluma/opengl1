@@ -28,7 +28,7 @@ initGL gameState = do
   window <- createWindow "OpenGL1"
 
   -- set the redraw color
-  clearColor $= Color4 0.2 0.2 0.2 0
+  clearColor $= Color4 0.16 0.15 0.15 0
 
   -- tell opengl the size of the rendering area
   viewport $= (Position 20 20, Size 580 400)
@@ -191,8 +191,8 @@ renderGameObject gameState gameObject = do
 
   preservingMatrix $ do
 
-    --angle <- get (angle gameState)
-    --rotate angle $ Vector3 (1::GLfloat) 0 (1::GLfloat)
+    angle <- get (angle gameState)
+    rotate angle $ Vector3 (1::GLfloat) 0 (1::GLfloat)
     scale 1 1 (1::GLfloat)
     
     --renderAxis
