@@ -1,6 +1,5 @@
 module Cube where
 
-import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 
 

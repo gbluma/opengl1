@@ -1,6 +1,5 @@
 module Display (initGL,display,idle) where
 
-import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 import Control.Applicative
 import Data.IORef

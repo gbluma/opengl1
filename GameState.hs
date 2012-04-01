@@ -1,7 +1,6 @@
 module GameState where
 
-import Graphics.Rendering.OpenGL
-import Graphics.UI.GLUT (Window, elapsedTime)
+import Graphics.UI.GLUT
 import Data.IORef (IORef, newIORef)
 import Textures 
 import GameObject

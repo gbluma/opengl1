@@ -1,6 +1,5 @@
 module Bindings (idle,display, reshape, keyboardMouse) where
 
-import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 import Display
 import System.Exit

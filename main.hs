@@ -1,4 +1,3 @@
-import Graphics.Rendering.OpenGL
 import Graphics.UI.GLUT
 import Data.IORef (newIORef)
 
