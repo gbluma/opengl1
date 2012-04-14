@@ -9,7 +9,6 @@ import Cube
 import Textures
 import GameObject
 
-
 -------------------------------------------------------------
 initGL:: GameState -> IO Window 
 initGL gameState = do 
@@ -52,7 +51,7 @@ initGL gameState = do
   
   -- setup texturing
   texture Texture2D $= Enabled 
-  texs <- getAndCreateTextures ["blocks11b", "texture2"]
+  texs <- getAndCreateTextures ["blocks11b"]
   textures gameState $= texs
 
   return window
@@ -146,7 +145,7 @@ display gameState = do
     textureBinding Texture2D $= (textures !! 0)
     renderObject Solid (Teapot 0.2)
     
-    textureBinding Texture2D $= (textures !! 1)
+    textureBinding Texture2D $= (textures !! 0)
     translate $ Vector3 (0.5::GLfloat) y z
     -- TODO: set the texture
     drawCube 0.2
