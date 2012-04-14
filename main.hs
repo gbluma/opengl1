@@ -26,7 +26,7 @@ main = do
 
   idleCallback $= Just (idle gameState)
 
-  -- fullScreen
+  fullScreen
 
   -- enter infinite loop
   mainLoop

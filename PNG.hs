@@ -22,7 +22,7 @@ readPng path =  do
 
     Right img  -> do let (w,h)   = dimensions img
                      let (w2,h2) = (fromIntegral w, fromIntegral h)
-                     print (w,h)
+                     -- print (w,h)
                      let d       = (imageData img)
                      pixels      <- withStorableArray d getPixelData
                      -- touchStorableArray d

@@ -17,7 +17,8 @@
 # Recently Finished Items
 
 * Display FPS (happens in console)
-* Load Images from File (uncompressed)
+* Load Images from File (uncompressed -> tga)
+* Load Images from File (compressed -> png)
 * Apply Textures to a cube
 * Setup Basic Lighting in Scene [done]
 * Refactor World into its own module

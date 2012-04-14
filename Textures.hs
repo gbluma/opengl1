@@ -14,6 +14,8 @@ import PNG (readPng)
 import Data.Word (Word8)
 import Foreign.Marshal.Alloc (free)
 
+import Debug.Trace
+
 -- read a list of images and returns a list of textures
 -- all images are assumed to be in the PNG image format
 getAndCreateTextures :: [String] -> IO [Maybe TextureObject]
@@ -34,9 +36,11 @@ getAndCreateTexture fileName = do
 
 -- read the image data
 readImageC :: String -> IO (Maybe (Size, PixelData Word8))
-readImageC path = catch (readPng path) (\_ -> do print ("missing texture: "++path)
-                                                 return Nothing)
-
+readImageC path 
+  | trace ("** [readImageC] Loading image " ++ path) True 
+  = catch (readPng path) ( \_ -> do 
+      print ("missing texture: "++path)
+      return Nothing) 
 
 -- creates the texture
 createTexture :: (Maybe (Size, PixelData a)) -> IO (Maybe TextureObject)
@@ -50,7 +54,7 @@ createTexture (Just ((Size x y), pixels@(PixelData _ _ ptr))) = do
    --textureWrapMode Texture2D S $= (Repeated, Repeat)
    --textureWrapMode Texture2D T $= (Repeated, Repeat)
    textureFunction $= Modulate
-   -- free ptr
+   -- free ptr -- (TGA needs this, PNG doesn't)
    return (Just texName)
 createTexture Nothing = return Nothing
 
