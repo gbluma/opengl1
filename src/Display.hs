@@ -3,7 +3,7 @@ module Display (initGL,display,idle) where
 import Graphics.UI.GLUT
 import Control.Applicative
 import Data.IORef
-import Graphics.GLUtil
+--import Graphics.GLUtil
 import GameState
 import Cube
 import Textures
