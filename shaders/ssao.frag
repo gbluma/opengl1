@@ -2,12 +2,14 @@
 uniform sampler2D rnm;
 uniform sampler2D normalMap;
 varying vec2 uv;
+
 const float totStrength = 1.38;
 const float strength = 0.07;
 const float offset = 18.0;
 const float falloff = 0.000002;
 const float rad = 0.006;
 const float invSamples = -1.38/10.0;
+
 void main(void)
 {
    // these are the random vectors inside a unit sphere
@@ -97,9 +99,9 @@ void main(void)
     bl += step(falloff,depthDifference)*(1.0-dot(occluderFragment.xyz,norm))*(1.0-smoothstep(falloff,strength,depthDifference));
 
    // output the result
-   vec4 outputColor = vec4( 1.0 + bl * invSamples, 0.0, 0.0, 1.0);
-   gl_FragColor = outputColor;
-   //gl_FragColor.r = vec4( 1.0 + bl * invSamples;
+   //vec4 outputColor = vec4( 1.0 + bl * invSamples, 0.0, 0.0, 1.0);
+   //gl_FragColor = outputColor;
+   gl_FragColor.r = 1.0 + bl * invSamples;
 
  
 }

@@ -1,9 +1,10 @@
 module Display (initGL,display,idle) where
 
-import Graphics.UI.GLUT
+import Graphics.UI.GLUT hiding (Program, currentProgram)
+import Graphics.Rendering.OpenGL.GL.Shaders (Program, currentProgram, VertexShader)
 import Control.Applicative
 import Data.IORef
---import Graphics.GLUtil
+-- import Graphics.GLUtil
 import GameState
 import Cube
 import Textures
@@ -12,6 +13,7 @@ import GameObject
 -------------------------------------------------------------
 initGL:: GameState -> IO Window 
 initGL gameState = do 
+
   initialDisplayMode $= [DoubleBuffered, WithDepthBuffer]
   initialWindowSize $= Size 580 400
   initialWindowPosition $= Position 20 20
@@ -30,6 +32,7 @@ initGL gameState = do
 
   -- tell opengl the size of the rendering area
   viewport $= (Position 20 20, Size 580 400)
+
 
   -- scale the scene to be the correct aspect ratio
   matrixMode $= Projection
@@ -145,20 +148,19 @@ display gameState = do
     textureBinding Texture2D $= (textures !! 0)
     renderObject Solid (Teapot 0.2)
     
-    textureBinding Texture2D $= (textures !! 1)
+    --textureBinding Texture2D $= (textures !! 1)
+    -- textureBinding Texture2D $= Just t1
+
     translate $ Vector3 (0.5::GLfloat) y z
     -- TODO: set the texture
     drawCube 0.2
 
-
   gameObject <- get (gameObject gameState)
   renderGameObject gameState gameObject 
 
-  -- needed for 2d stuff
   matrixMode $= Projection 
   loadIdentity
   ortho2D 0 0 (fromIntegral xres) (fromIntegral yres)
-
   renderFPS fps (fromIntegral xres) (fromIntegral yres)
 
   flush

@@ -51,8 +51,8 @@ createTexture (Just ((Size x y), pixels@(PixelData _ _ ptr))) = do
    generateMipmap Texture2D $= Enabled
    build2DMipmaps Texture2D RGBA' (fromIntegral x) (fromIntegral y) pixels
    textureFilter  Texture2D $= ((Linear', Just Nearest), Linear')
-   --textureWrapMode Texture2D S $= (Repeated, Repeat)
-   --textureWrapMode Texture2D T $= (Repeated, Repeat)
+   textureWrapMode Texture2D S $= (Mirrored, ClampToEdge)
+   textureWrapMode Texture2D T $= (Mirrored, ClampToEdge)
    textureFunction $= Modulate
    -- free ptr -- (TGA needs this, PNG doesn't)
    return (Just texName)

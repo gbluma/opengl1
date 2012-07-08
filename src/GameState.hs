@@ -2,18 +2,19 @@ module GameState where
 
 import Graphics.UI.GLUT
 import Data.IORef (IORef, newIORef)
-import Textures 
+import Textures
 import GameObject
+import Shaders
 
 -------------------------------------------------------------
 data GameState = GameState { 
-  angle    :: IORef GLfloat,
-  delta    :: IORef GLfloat,
-  pos      :: IORef (GLfloat, GLfloat, GLfloat),
-  time     :: IORef Int,
-  fps      :: IORef Int,
-  textures :: IORef [Maybe TextureObject],
-  gameObject :: IORef GameObject
+  angle       :: IORef GLfloat,
+  delta       :: IORef GLfloat,
+  pos         :: IORef (GLfloat, GLfloat, GLfloat),
+  time        :: IORef Int,
+  fps         :: IORef Int,
+  textures    :: IORef [Maybe TextureObject],
+  gameObject  :: IORef GameObject
 }
 
 -------------------------------------------------------------
