@@ -1,6 +1,7 @@
 .PHONY: build prod test
 
 build:
+	hasktags -c src/*.hs
 	ghc src/*.hs -H100m -O2 -o opengl1 -hidir ./build -odir ./build 
 
 prod:
