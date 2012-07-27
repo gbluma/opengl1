@@ -155,6 +155,9 @@ display gameState = do
     -- TODO: set the texture
     drawCube 0.2
 
+    -- draw room
+    drawInvertedCube 6.0
+
   gameObject <- get (gameObject gameState)
   renderGameObject gameState gameObject 
 
