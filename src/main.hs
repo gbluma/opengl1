@@ -12,21 +12,26 @@ main = do
 
   gameState <- makeGameState
 
-  window <- initGL gameState
+  (window, gameState') <- initGL gameState
   depthFunc $= Just Less
 
+  -- fullScreen
+
+  -- TODO: 
+  --  * rewrite these functions to be recursive instead of callback-based
+  --  * or switch to GLFW
+
   -- register a display callback (found in Display.hs)
-  displayCallback $= (display gameState)
+  displayCallback $= (display gameState')
 
   -- register a reshape callback (found in Bindings.hs)
-  reshapeCallback $= Just reshape
+  -- reshapeCallback $= Just reshape
   
   -- setup keyboard and mouse (found in Bindings.hs)
-  keyboardMouseCallback $= Just (keyboardMouse window gameState)
+  -- keyboardMouseCallback $= Just (keyboardMouse window gameState')
 
-  idleCallback $= Just (idle gameState)
+  -- idleCallback $= Just (idle gameState')
 
-  fullScreen
 
   -- enter infinite loop
   mainLoop

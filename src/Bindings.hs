@@ -18,66 +18,68 @@ reshape s@(Size w h) = do
 -------------------------------------------------------------
 keyboardAct _ gameState (Char ' ') Down = do
   -- flip the direction of rotation
-  delta' <- get (delta gameState)
-  (delta gameState) $= -delta'
+  let delta' = delta gameState
+  return $ gameState { delta = -delta' }
 
 -------------------------------------------------------------
 keyboardAct _ gameState (Char '=') Down = do
   -- speed up rotation
-  delta' <- get (delta gameState)
-  (delta gameState) $= 2*delta'
+  let delta' = delta gameState
+  return $ gameState { delta = 2*delta' }
 
 -------------------------------------------------------------
 keyboardAct _ gameState (Char '-') Down = do
   -- slow down rotation
-  delta' <- get (delta gameState)
-  (delta gameState) $= delta'/2
+  let delta' = delta gameState
+  return $ gameState { delta = delta'/2 }
 
 -------------------------------------------------------------
 keyboardAct _ gameState (SpecialKey KeyLeft) Down = do
   -- move left (reduce x component)
-  (x,y,z) <- get (pos gameState)
-  (pos gameState) $= (x-0.02,y,z)
+  let (x,y,z) = pos gameState
+  return $ gameState { pos = (x-0.02,y,z) }
 
 -------------------------------------------------------------
 keyboardAct _ gameState (SpecialKey KeyRight) Down = do
   -- move right (boost x component)
-  (x,y,z) <- get (pos gameState)
-  (pos gameState) $= (x+0.02,y,z)
+  let (x,y,z) = pos gameState
+  return $ gameState { pos = (x+0.02,y,z) }
 
 -------------------------------------------------------------
 keyboardAct _ gameState (SpecialKey KeyUp) Down = do
   -- move up (boost y component)
-  (x,y,z) <- get (pos gameState)
-  (pos gameState) $= (x,y+0.02,z)
+  let (x,y,z) = pos gameState
+  return $ gameState { pos = (x,y+0.02,z) }
 
 -------------------------------------------------------------
 keyboardAct _ gameState (SpecialKey KeyDown) Down = do
   -- move down (reduce y component)
-  (x,y,z) <- get (pos gameState)
-  (pos gameState) $= (x,y-0.02,z)
+  let (x,y,z) = pos gameState
+  return $ gameState { pos = (x,y-0.02,z) }
 
 -------------------------------------------------------------
 keyboardAct _ gameState (Char 'z') Down = do
   -- move up (boost z component)
-  (x,y,z) <- get (pos gameState)
-  (pos gameState) $= (x,y,z+0.02)
+  let (x,y,z) = pos gameState
+  return $ gameState { pos = (x,y,z+0.02) }
 
 -------------------------------------------------------------
 keyboardAct _ gameState (Char 'x') Down = do
   -- move down (reduce z component)
-  (x,y,z) <- get (pos gameState)
-  (pos gameState) $= (x,y,z-0.02)
+  let (x,y,z) = pos gameState
+  return $ gameState { pos = (x,y,z-0.02) }
 
 -------------------------------------------------------------
-keyboardAct window _ (Char '\ESC') Down = do
+keyboardAct window gameState (Char '\ESC') Down = do
   -- Exit via escape button
   destroyWindow window
   exitWith ExitSuccess
+  return $ gameState
 
 -------------------------------------------------------------
-keyboardAct _ _ _ _ = return () 
+keyboardAct _ gameState _ _ = return gameState
 
 keyboardMouse window gameState key state modifiers position = do
   keyboardAct window gameState key state
+  return gameState
 

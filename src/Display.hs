@@ -11,7 +11,7 @@ import Textures
 import GameObject
 
 -------------------------------------------------------------
-initGL:: GameState -> IO Window 
+initGL:: GameState -> IO (Window, GameState)
 initGL gameState = do 
 
   initialDisplayMode $= [DoubleBuffered, WithDepthBuffer]
@@ -55,9 +55,10 @@ initGL gameState = do
   -- setup texturing
   texture Texture2D $= Enabled 
   texs <- getAndCreateTextures ["blocks11b", "test"]
-  textures gameState $= texs
 
-  return window
+  let new_gamestate = gameState { textures = texs }
+
+  return (window, new_gamestate)
 
 -------------------------------------------------------------
 renderAxis :: IO ()
@@ -118,9 +119,9 @@ display gameState = do
   
   -- load our dynamic data
   (_, Size xres yres) <- get viewport
-  (x,y,z) <- get (pos gameState)
-  fps <- get (fps gameState)
-  textures <- get (textures gameState)
+  let (x,y,z)   = pos gameState
+  let _fps      = fps gameState
+  let _textures = textures gameState
   
   perspective 45 ((fromIntegral xres)/(fromIntegral yres)) 0.1 100
   matrixMode $= Modelview 0
@@ -133,8 +134,8 @@ display gameState = do
   
   preservingMatrix $ do
 
-    angle <- get (angle gameState)
-    rotate angle $ Vector3 (1::GLfloat) 0 (1::GLfloat)
+    let _angle = angle gameState
+    rotate _angle $ Vector3 (1::GLfloat) 0 (1::GLfloat)
     scale 1 1 (1::GLfloat) 
     
     renderAxis
@@ -142,13 +143,13 @@ display gameState = do
     color $ Color3 (0.3::GLfloat) (0.7::GLfloat) (0.3::GLfloat)
 
     -- set the tranlation
-    (x,y,z) <- get (pos gameState)
+    -- (x,y,z) <- get (pos gameState)
     translate $ Vector3 x y z
     
-    textureBinding Texture2D $= (textures !! 0)
+    textureBinding Texture2D $= (_textures !! 0)
     renderObject Solid (Teapot 0.2)
     
-    --textureBinding Texture2D $= (textures !! 1)
+    --textureBinding Texture2D $= (_textures !! 1)
     -- textureBinding Texture2D $= Just t1
 
     translate $ Vector3 (0.5::GLfloat) y z
@@ -158,44 +159,52 @@ display gameState = do
     -- draw room
     drawInvertedCube 6.0
 
-  gameObject <- get (gameObject gameState)
-  renderGameObject gameState gameObject 
+  renderGameObject gameState $ gameObject gameState
 
   matrixMode $= Projection 
   loadIdentity
   ortho2D 0 0 (fromIntegral xres) (fromIntegral yres)
-  renderFPS fps (fromIntegral xres) (fromIntegral yres)
+  renderFPS _fps (fromIntegral xres) (fromIntegral yres)
 
   flush
   swapBuffers
 
 
 -------------------------------------------------------------
-idle :: GameState -> IO ()
+idle :: GameState -> IO GameState
 idle gameState = do
   
   -- update state vars for control (todo: refactor)
-  a <- get (angle gameState)
-  d <- get (delta gameState)
-  angle gameState $= a + d
- 
-  -- update the FPS display
-  updateFPS gameState
+  let a = angle gameState
+  let d = delta gameState
+
+  -- calculate fps
+  let prevTime = time gameState
+  currTime <- get (elapsedTime)
+  let diff = fromIntegral (currTime - prevTime)
+  let fps' = truncate (1000.0 / diff)
 
   postRedisplay Nothing
+
+  return $ gameState { time = currTime
+                     , fps  = fps'
+                     , angle = a + d }
+ 
+
+
 
 
 -------------------------------------------------------------
 renderGameObject :: GameState -> GameObject -> IO ()
 renderGameObject gameState gameObject = do
   
-  textures <- get (textures gameState)
+  let _textures = textures gameState
   (x,y,z) <- get (location gameObject)
 
   preservingMatrix $ do
 
-    angle <- get (angle gameState)
-    rotate angle $ Vector3 (1::GLfloat) 0 (1::GLfloat)
+    let _angle = angle gameState
+    rotate _angle $ Vector3 (1::GLfloat) 0 (1::GLfloat)
     scale 1 1 (1::GLfloat)
     
     --renderAxis
@@ -205,5 +214,5 @@ renderGameObject gameState gameObject = do
     -- set the tranlation
     translate $ Vector3 x y z
     
-    textureBinding Texture2D $= (textures !! 0)
+    textureBinding Texture2D $= (_textures !! 0)
     renderObject Solid (Teapot 0.2)
