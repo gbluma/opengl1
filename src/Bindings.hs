@@ -1,10 +1,10 @@
-module Bindings (idle,display, reshape,keyboardAct) where
+module Bindings (idle,display,reshape,keyboardAct) where
 
 import Graphics.Rendering.OpenGL
 import qualified Graphics.UI.GLFW as GLFW
-import Display
 import System.Exit
 
+import Display
 import GameState
 
 -------------------------------------------------------------
@@ -17,27 +17,36 @@ reshape s@(Size w h) = do
   matrixMode $= Modelview 0
 
 -------------------------------------------------------------
-keyboardAct gameState = do
+handleEsc           :: GameState -> IO GameState
+handleEsc gameState = do
   esc <- GLFW.getKey GLFW.ESC
-  --speed_up <- GLFW.getKey '='
-
   return $ case esc of
     GLFW.Press   -> gameState { gameStatus = Status_Shutdown }
-    GLFW.Release -> gameState
+    GLFW.Release -> gameState  -- pass thru
+  
+-------------------------------------------------------------
+handleEqual           :: GameState -> IO GameState
+handleEqual gameState = do
+  speed_up <- GLFW.getKey '='
+  return $ case speed_up of
+    GLFW.Press   -> gameState { delta = (2.0*(delta gameState)) }
+    GLFW.Release -> gameState  -- pass thru
 
-  -- TODO: consider using applicatives to chain up these keyboard rules
+-------------------------------------------------------------
+keyboardAct           :: GameState -> IO GameState
+keyboardAct gameState = (return gameState) 
+                          >>= handleEsc
+                          >>= handleEqual
+                          >>= handleSpace
 
-  -- case speed_up of
-  --   GLFW.Press   -> gameState { delta = (2.0*(delta gameState)) }
-  --   GLFW.Release -> gameState
+-------------------------------------------------------------
+handleSpace           :: GameState -> IO GameState
+handleSpace gameState = do
+  space <- GLFW.getKey ' '
+  return $ case space of
+    GLFW.Press   -> gameState { delta = -(delta gameState) }
+    GLFW.Release -> gameState  -- pass thru
 
-
--- -------------------------------------------------------------
--- keyboardAct gameState (Char ' ') Down = do
---   -- flip the direction of rotation
---   let delta' = delta gameState
---   return $ gameState { delta = -delta' }
--- 
 -- -------------------------------------------------------------
 -- keyboardAct gameState (Char '=') Down = do
 --   -- speed up rotation
