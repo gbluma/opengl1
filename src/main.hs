@@ -12,24 +12,23 @@ import GameState
 -------------------------------------------------------------
 gameLoop gameState = do
 
-  -- render
-  gameState' <- display gameState
-  GLFW.swapBuffers
+  -- do complete processing for one frame
+  -- (using monadic binds to pass gamestate, with incremental modifications, 
+  --  to each of these functions)
+  gameState' <- (return gameState) 
+    >>= display       -- render the current frame (passing along GameState)
+    >>= idle          -- handle world updating, etc. (passing along GameState)
+    >>= keyboardAct   -- capture and process input (passing along GameState)
 
-  GLFW.sleep 0.01
-  
-  -- update game world
-  gameState'' <- idle gameState'
-
-  -- TODO: rewrite key/mouse controls here
-  gameState''' <- keyboardAct gameState''
-
-  -- only continue displaying if window is open
+  -- check if the window is still open
   windowOpen <- getParam Opened
+
+  -- only continue looping if window is open
   unless (not windowOpen) $
-    case (gameStatus gameState''') of
-      Status_Shutdown  -> return $ ()           -- exit looping
-      _                -> gameLoop gameState''' -- keep looping
+    -- check game status
+    case (gameStatus gameState') of
+      Status_Shutdown  -> return $ ()           -- shutting down, exit looping
+      _                -> gameLoop gameState'   -- anything else, keep looping
 
 -------------------------------------------------------------
 main :: IO ()
@@ -37,16 +36,16 @@ main = do
   args <- getArgs
   progname <- getProgName
 
-  gameState <- makeGameState
-  gameState' <- initGL $ gameState
-
   -- TODO: move reshape out of Bindings.hs
   GLFW.windowSizeCallback $= reshape
 
-  -- enter infinite loop
-  gameLoop gameState'
+  -- create and initialize GameState
+  gameState <- makeGameState >>= initGL 
 
-  -- probably never actually get here, but in case we do...
+  -- enter infinite loop
+  gameLoop gameState
+
+  -- if we fall out of the loop, exit cleanly.
   GLFW.closeWindow
   GLFW.terminate
 

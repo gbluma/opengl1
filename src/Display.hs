@@ -158,6 +158,10 @@ display gameState = do
   loadIdentity
   ortho2D 0 0 (fromIntegral xres) (fromIntegral yres)
   renderFPS _fps (fromIntegral xres) (fromIntegral yres)
+
+  -- display to screen
+  GLFW.swapBuffers
+
   return gameState
 
 
@@ -177,6 +181,12 @@ idle gameState = do
   let fps' = truncate (1.0 / diff)
 
   -- putStrLn $ "FPS: " ++ (show fps')
+
+  -- TODO: dynamic frame rate
+  --  * capture time at start of frame
+  --  * take delta into account
+  --  * sleep for corresponding amount to reach 60 fps
+  GLFW.sleep 0.01
 
   return $ gameState { time = currTime
                      , fps  = fps'
