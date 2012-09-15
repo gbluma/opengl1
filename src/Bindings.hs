@@ -1,4 +1,4 @@
-module Bindings (idle,display, reshape) where
+module Bindings (idle,display, reshape,keyboardAct) where
 
 import Graphics.Rendering.OpenGL
 import qualified Graphics.UI.GLFW as GLFW
@@ -15,6 +15,22 @@ reshape s@(Size w h) = do
   loadIdentity
   perspective 45 ((fromIntegral w)/(fromIntegral h)) 0.02 130
   matrixMode $= Modelview 0
+
+-------------------------------------------------------------
+keyboardAct gameState = do
+  esc <- GLFW.getKey GLFW.ESC
+  --speed_up <- GLFW.getKey '='
+
+  return $ case esc of
+    GLFW.Press   -> gameState { gameStatus = Status_Shutdown }
+    GLFW.Release -> gameState
+
+  -- TODO: consider using applicatives to chain up these keyboard rules
+
+  -- case speed_up of
+  --   GLFW.Press   -> gameState { delta = (2.0*(delta gameState)) }
+  --   GLFW.Release -> gameState
+
 
 -- -------------------------------------------------------------
 -- keyboardAct gameState (Char ' ') Down = do

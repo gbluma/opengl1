@@ -6,6 +6,10 @@ import Textures
 import GameObject
 import Shaders
 
+data Status = Status_Init
+            | Status_Shutdown
+            deriving (Show, Eq)
+
 -------------------------------------------------------------
 data GameState = GameState { 
   angle       :: GLfloat,
@@ -14,7 +18,8 @@ data GameState = GameState {
   time        :: Double,
   fps         :: Int,
   textures    :: [Maybe TextureObject],
-  gameObject  :: GameObject
+  gameObject  :: GameObject,
+  gameStatus  :: Status
 }
 
 -------------------------------------------------------------
@@ -30,5 +35,6 @@ makeGameState = do
                      , time     = 0.0
                      , fps      = 0 
                      , textures = textures' 
-                     , gameObject = gameObject' }
+                     , gameObject = gameObject'
+                     , gameStatus = Status_Init}
 

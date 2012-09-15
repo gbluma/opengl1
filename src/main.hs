@@ -22,11 +22,14 @@ gameLoop gameState = do
   gameState'' <- idle gameState'
 
   -- TODO: rewrite key/mouse controls here
+  gameState''' <- keyboardAct gameState''
 
   -- only continue displaying if window is open
   windowOpen <- getParam Opened
   unless (not windowOpen) $
-    gameLoop gameState''
+    case (gameStatus gameState''') of
+      Status_Shutdown  -> return $ ()           -- exit looping
+      _                -> gameLoop gameState''' -- keep looping
 
 -------------------------------------------------------------
 main :: IO ()
