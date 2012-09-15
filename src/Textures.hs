@@ -9,7 +9,7 @@ This module is for loading textures
 
 module Textures where
 
-import Graphics.UI.GLUT
+import Graphics.Rendering.OpenGL
 import PNG (readPng)
 import Data.Word (Word8)
 import Foreign.Marshal.Alloc (free)

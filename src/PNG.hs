@@ -10,7 +10,7 @@ import Data.Word ( Word8, Word32 )
 import Data.Int (Int32)
 import Foreign.Marshal.Array (peekArray, pokeArray)
 import Foreign.Ptr (nullPtr, Ptr())
-import Graphics.UI.GLUT
+import Graphics.Rendering.OpenGL
 
 readPng :: FilePath -> IO (Maybe (Size, PixelData Word8))
 readPng path =  do

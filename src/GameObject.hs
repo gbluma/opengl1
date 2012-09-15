@@ -1,8 +1,7 @@
 
 module GameObject where
 
-import Graphics.UI.GLUT 
---import Graphics.GLUtil
+import Graphics.Rendering.OpenGL
 import Data.IORef
 import Textures 
 

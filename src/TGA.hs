@@ -25,7 +25,8 @@ import System.IO ( Handle, IOMode(ReadMode), openBinaryFile, hGetBuf, hClose )
 import Foreign.Marshal.Array (peekArray, pokeArray)
 import Foreign.Marshal.Alloc (free, mallocBytes)
 import Foreign.Ptr (plusPtr, Ptr())
-import Graphics.UI.GLUT -- (Size, PixelData, UnsignedByte, PixelFormat, RGBA, RGB)
+-- import Graphics.UI.GLUT -- (Size, PixelData, UnsignedByte, PixelFormat, RGBA, RGB)
+import Graphics.Rendering.OpenGL
 
 
 withBinaryFile' :: FilePath -> (Handle -> IO a) -> IO a

@@ -1,38 +1,29 @@
 module Display (initGL,display,idle) where
 
-import Graphics.UI.GLUT hiding (Program, currentProgram)
-import Graphics.Rendering.OpenGL.GL.Shaders (Program, currentProgram, VertexShader)
+import Graphics.Rendering.OpenGL
+import qualified Graphics.UI.GLFW as GLFW
 import Control.Applicative
 import Data.IORef
--- import Graphics.GLUtil
+
 import GameState
 import Cube
 import Textures
 import GameObject
 
 -------------------------------------------------------------
-initGL:: GameState -> IO (Window, GameState)
+initGL:: GameState -> IO GameState
 initGL gameState = do 
 
-  initialDisplayMode $= [DoubleBuffered, WithDepthBuffer]
-  initialWindowSize $= Size 580 400
-  initialWindowPosition $= Position 20 20
-
-  initialDisplayCapabilities $= 
-    [ With  DisplayRGB,
-      Where DisplayDepth IsAtLeast 16,
-      With  DisplaySamples,
-      Where DisplayStencil IsNotLessThan 2,
-      With  DisplayDouble ]
-
-  window <- createWindow "OpenGL1"
+  -- setup the window
+  GLFW.initialize
+  GLFW.openWindow (Size 580 400) [GLFW.DisplayAlphaBits 8] GLFW.Window
+  GLFW.windowTitle $= "OpenGL1"
 
   -- set the redraw color
   clearColor $= Color4 0.16 0.15 0.15 0
 
   -- tell opengl the size of the rendering area
-  viewport $= (Position 20 20, Size 580 400)
-
+  viewport $= (Position 0 0, Size 580 400)
 
   -- scale the scene to be the correct aspect ratio
   matrixMode $= Projection
@@ -43,22 +34,25 @@ initGL gameState = do
   -- setup lighting
   shadeModel $= Smooth
   blend      $= Enabled 
+  blendFunc  $= (SrcAlpha, OneMinusSrcAlpha)
+
   materialSpecular Front $= Color4 0.7 0.75 0.7 0.7
   materialShininess Front $= 127
+  depthFunc $= Just Less
 
   lighting $= Enabled
   light (Light 0) $= Enabled
   position (Light 0) $= Vertex4 2 2 2 0
   light (Light 1) $= Enabled
   position (Light 1) $= Vertex4 (-2) 2 2 0
-  
+
   -- setup texturing
   texture Texture2D $= Enabled 
   texs <- getAndCreateTextures ["blocks11b", "test"]
 
   let new_gamestate = gameState { textures = texs }
 
-  return (window, new_gamestate)
+  return new_gamestate
 
 -------------------------------------------------------------
 renderAxis :: IO ()
@@ -103,7 +97,9 @@ renderFPS fps screenWidth screenHeight = do
   -- do rendering 
   color $ Color3 1 1 (1::GLfloat)
   currentRasterPosition $= Vertex4 x_pos y_pos 0 1
-  renderString Fixed8By13 $  "FPS: " ++ (show fps)
+
+  -- TODO: where does this text show up?
+  GLFW.renderString GLFW.Fixed8x16 $  "FPS: " ++ (show fps)
   
   -- re-enable texturing and lighting now.
   lighting $= Enabled
@@ -111,7 +107,7 @@ renderFPS fps screenWidth screenHeight = do
 
 
   -------------------------------------------------------------
-display :: GameState -> IO ()
+display :: GameState -> IO GameState
 display gameState = do
 
   -- clear the scene
@@ -147,17 +143,14 @@ display gameState = do
     translate $ Vector3 x y z
     
     textureBinding Texture2D $= (_textures !! 0)
-    renderObject Solid (Teapot 0.2)
+    --renderObject Solid (Teapot 0.2)
     
-    --textureBinding Texture2D $= (_textures !! 1)
+    textureBinding Texture2D $= (_textures !! 1)
     -- textureBinding Texture2D $= Just t1
 
     translate $ Vector3 (0.5::GLfloat) y z
     -- TODO: set the texture
     drawCube 0.2
-
-    -- draw room
-    drawInvertedCube 6.0
 
   renderGameObject gameState $ gameObject gameState
 
@@ -165,9 +158,7 @@ display gameState = do
   loadIdentity
   ortho2D 0 0 (fromIntegral xres) (fromIntegral yres)
   renderFPS _fps (fromIntegral xres) (fromIntegral yres)
-
-  flush
-  swapBuffers
+  return gameState
 
 
 -------------------------------------------------------------
@@ -180,18 +171,16 @@ idle gameState = do
 
   -- calculate fps
   let prevTime = time gameState
-  currTime <- get (elapsedTime)
-  let diff = fromIntegral (currTime - prevTime)
-  let fps' = truncate (1000.0 / diff)
+  currTime <- get (GLFW.time)
 
-  postRedisplay Nothing
+  let diff = currTime - prevTime
+  let fps' = truncate (1.0 / diff)
+
+  -- putStrLn $ "FPS: " ++ (show fps')
 
   return $ gameState { time = currTime
                      , fps  = fps'
                      , angle = a + d }
- 
-
-
 
 
 -------------------------------------------------------------
@@ -215,4 +204,4 @@ renderGameObject gameState gameObject = do
     translate $ Vector3 x y z
     
     textureBinding Texture2D $= (_textures !! 0)
-    renderObject Solid (Teapot 0.2)
+    -- renderObject Solid (Teapot 0.2)
