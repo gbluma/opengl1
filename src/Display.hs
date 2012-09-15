@@ -22,9 +22,6 @@ initGL gameState = do
   -- set the redraw color
   clearColor $= Color4 0.16 0.15 0.15 0
 
-  -- tell opengl the size of the rendering area
-  viewport $= (Position 0 0, Size 580 400)
-
   -- scale the scene to be the correct aspect ratio
   matrixMode $= Projection
   loadIdentity

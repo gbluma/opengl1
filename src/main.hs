@@ -36,7 +36,7 @@ main = do
   args <- getArgs
   progname <- getProgName
 
-  -- TODO: move reshape out of Bindings.hs
+  -- TODO: this isn't calling correctly
   GLFW.windowSizeCallback $= reshape
 
   -- create and initialize GameState

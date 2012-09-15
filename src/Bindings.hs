@@ -9,6 +9,7 @@ import GameState
 
 -------------------------------------------------------------
 reshape s@(Size w h) = do
+  putStrLn $ "Resizing to: " ++ (show w) ++ ", " ++ (show h)
   viewport $= (Position 0 0, s)
   
   matrixMode $= Projection
@@ -17,96 +18,104 @@ reshape s@(Size w h) = do
   matrixMode $= Modelview 0
 
 -------------------------------------------------------------
+keyboardAct           :: GameState -> IO GameState
+keyboardAct gameState = (return gameState) 
+                          >>= handleEsc
+                          >>= handleSpace
+                          >>= handleEqual >>= handleMinus
+                          >>= handleLeft >>= handleRight >>= handleUp >>= handleDown
+                          >>= handleZ >>= handleX
+
+-------------------------------------------------------------
 handleEsc           :: GameState -> IO GameState
 handleEsc gameState = do
-  esc <- GLFW.getKey GLFW.ESC
-  return $ case esc of
+  key <- GLFW.getKey GLFW.ESC
+  return $ case key of
     GLFW.Press   -> gameState { gameStatus = Status_Shutdown }
     GLFW.Release -> gameState  -- pass thru
   
 -------------------------------------------------------------
 handleEqual           :: GameState -> IO GameState
 handleEqual gameState = do
-  speed_up <- GLFW.getKey '='
-  return $ case speed_up of
-    GLFW.Press   -> gameState { delta = (2.0*(delta gameState)) }
+  key <- GLFW.getKey '='
+  return $ case key of
+    GLFW.Press   -> gameState { delta = (1.1*(delta gameState)) }
     GLFW.Release -> gameState  -- pass thru
 
--------------------------------------------------------------
-keyboardAct           :: GameState -> IO GameState
-keyboardAct gameState = (return gameState) 
-                          >>= handleEsc
-                          >>= handleEqual
-                          >>= handleSpace
 
 -------------------------------------------------------------
 handleSpace           :: GameState -> IO GameState
 handleSpace gameState = do
-  space <- GLFW.getKey ' '
-  return $ case space of
+  key <- GLFW.getKey ' '
+  return $ case key of
     GLFW.Press   -> gameState { delta = -(delta gameState) }
     GLFW.Release -> gameState  -- pass thru
 
--- -------------------------------------------------------------
--- keyboardAct gameState (Char '=') Down = do
---   -- speed up rotation
---   let delta' = delta gameState
---   return $ gameState { delta = 2*delta' }
--- 
--- -------------------------------------------------------------
--- keyboardAct gameState (Char '-') Down = do
---   -- slow down rotation
---   let delta' = delta gameState
---   return $ gameState { delta = delta'/2 }
--- 
--- -------------------------------------------------------------
--- keyboardAct gameState (SpecialKey KeyLeft) Down = do
---   -- move left (reduce x component)
---   let (x,y,z) = pos gameState
---   return $ gameState { pos = (x-0.02,y,z) }
--- 
--- -------------------------------------------------------------
--- keyboardAct gameState (SpecialKey KeyRight) Down = do
---   -- move right (boost x component)
---   let (x,y,z) = pos gameState
---   return $ gameState { pos = (x+0.02,y,z) }
--- 
--- -------------------------------------------------------------
--- keyboardAct gameState (SpecialKey KeyUp) Down = do
---   -- move up (boost y component)
---   let (x,y,z) = pos gameState
---   return $ gameState { pos = (x,y+0.02,z) }
--- 
--- -------------------------------------------------------------
--- keyboardAct gameState (SpecialKey KeyDown) Down = do
---   -- move down (reduce y component)
---   let (x,y,z) = pos gameState
---   return $ gameState { pos = (x,y-0.02,z) }
--- 
--- -------------------------------------------------------------
--- keyboardAct gameState (Char 'z') Down = do
---   -- move up (boost z component)
---   let (x,y,z) = pos gameState
---   return $ gameState { pos = (x,y,z+0.02) }
--- 
--- -------------------------------------------------------------
--- keyboardAct gameState (Char 'x') Down = do
---   -- move down (reduce z component)
---   let (x,y,z) = pos gameState
---   return $ gameState { pos = (x,y,z-0.02) }
--- 
--- -------------------------------------------------------------
--- keyboardAct gameState (Char '\ESC') Down = do
---   -- Exit via escape button
---   GLFW.closeWindow
---   GLFW.terminate
---   exitWith ExitSuccess
---   return $ gameState
--- 
--- -------------------------------------------------------------
--- keyboardAct gameState _ _ = return gameState
--- 
--- keyboardMouse gameState key state modifiers position = do
---   keyboardAct gameState key state
---   return gameState
--- 
+-------------------------------------------------------------
+handleMinus           :: GameState -> IO GameState
+handleMinus gameState = do
+  key <- GLFW.getKey '-'
+  return $ case key of
+    GLFW.Press   -> gameState { delta = (delta gameState)/1.1 }
+    GLFW.Release -> gameState  -- pass thru
+
+-------------------------------------------------------------
+handleLeft           :: GameState -> IO GameState
+handleLeft gameState = do
+  key <- GLFW.getKey GLFW.LEFT
+  return $ case key of
+    GLFW.Press   -> do
+      let (x,y,z) = pos gameState
+      gameState { pos = (x-0.02, y, z) }
+    GLFW.Release -> gameState  -- pass thru
+
+-------------------------------------------------------------
+handleRight           :: GameState -> IO GameState
+handleRight gameState = do
+  key <- GLFW.getKey GLFW.RIGHT
+  return $ case key of
+    GLFW.Press   -> do
+      let (x,y,z) = pos gameState
+      gameState { pos = (x+0.02, y, z) }
+    GLFW.Release -> gameState  -- pass thru
+
+-------------------------------------------------------------
+handleUp           :: GameState -> IO GameState
+handleUp gameState = do
+  key <- GLFW.getKey GLFW.UP
+  return $ case key of
+    GLFW.Press   -> do
+      let (x,y,z) = pos gameState
+      gameState { pos = (x, y+0.02, z) }
+    GLFW.Release -> gameState  -- pass thru
+
+-------------------------------------------------------------
+handleDown           :: GameState -> IO GameState
+handleDown gameState = do
+  key <- GLFW.getKey GLFW.DOWN
+  return $ case key of
+    GLFW.Press   -> do
+      let (x,y,z) = pos gameState
+      gameState { pos = (x, y-0.02, z) }
+    GLFW.Release -> gameState  -- pass thru
+
+-------------------------------------------------------------
+handleZ           :: GameState -> IO GameState
+handleZ gameState = do
+  key <- GLFW.getKey 'z'
+  return $ case key of
+    GLFW.Press   -> do
+      let (x,y,z) = pos gameState
+      gameState { pos = (x, y, z+0.02) }
+    GLFW.Release -> gameState  -- pass thru
+
+-------------------------------------------------------------
+handleX           :: GameState -> IO GameState
+handleX gameState = do
+  key <- GLFW.getKey 'x'
+  return $ case key of
+    GLFW.Press   -> do
+      let (x,y,z) = pos gameState
+      gameState { pos = (x, y, z-0.02) }
+    GLFW.Release -> gameState  -- pass thru
+
