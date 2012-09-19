@@ -10,13 +10,18 @@ import Cube
 import Textures
 import GameObject
 
+screen_width  = 720
+screen_height = 480
+
 -------------------------------------------------------------
 initGL:: GameState -> IO GameState
 initGL gameState = do 
 
   -- setup the window
   GLFW.initialize
-  GLFW.openWindow (Size 580 400) [GLFW.DisplayAlphaBits 8] GLFW.Window
+  GLFW.openWindow (Size screen_width screen_height) 
+                  [GLFW.DisplayAlphaBits 8] 
+                  GLFW.Window
   GLFW.windowTitle $= "OpenGL1"
 
   -- set the redraw color
@@ -25,7 +30,7 @@ initGL gameState = do
   -- scale the scene to be the correct aspect ratio
   matrixMode $= Projection
   loadIdentity
-  perspective 45 ((fromIntegral 580)/(fromIntegral 400)) 0.1 100
+  perspective 45 ((fromIntegral screen_width)/(fromIntegral screen_height)) 0.1 100
   matrixMode $= Modelview 0
 
   -- setup lighting
@@ -112,6 +117,7 @@ display gameState = do
   
   -- load our dynamic data
   (_, Size xres yres) <- get viewport
+  let Camera cx cy cz cyaw cpitch = camera gameState
   let (x,y,z)   = pos gameState
   let _fps      = fps gameState
   let _textures = textures gameState
@@ -123,7 +129,9 @@ display gameState = do
   loadIdentity
 
   -- move the camera back one unit
-  translate $ Vector3 0 0 (-1::GLfloat) 
+  rotate cpitch $ Vector3 1 0 0
+  rotate cyaw $ Vector3 0 1 0
+  translate $ Vector3 cx cy cz
   
   preservingMatrix $ do
 
@@ -142,7 +150,7 @@ display gameState = do
     textureBinding Texture2D $= (_textures !! 0)
     --renderObject Solid (Teapot 0.2)
     
-    textureBinding Texture2D $= (_textures !! 1)
+    --textureBinding Texture2D $= (_textures !! 1)
     -- textureBinding Texture2D $= Just t1
 
     translate $ Vector3 (0.5::GLfloat) y z

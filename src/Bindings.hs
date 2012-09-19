@@ -13,7 +13,7 @@ reshape s@(Size w h) = do
   viewport $= (Position 0 0, s)
   
   matrixMode $= Projection
-  loadIdentity
+  loadIdentity 
   perspective 45 ((fromIntegral w)/(fromIntegral h)) 0.02 130
   matrixMode $= Modelview 0
 
@@ -23,8 +23,7 @@ keyboardAct gameState = (return gameState)
                           >>= handleEsc
                           >>= handleSpace
                           >>= handleEqual >>= handleMinus
-                          >>= handleLeft >>= handleRight >>= handleUp >>= handleDown
-                          >>= handleZ >>= handleX
+                          >>= handleLeft >>= handleRight >>= moveForward >>= moveBackward
 
 -------------------------------------------------------------
 handleEsc           :: GameState -> IO GameState
@@ -65,8 +64,8 @@ handleLeft gameState = do
   key <- GLFW.getKey GLFW.LEFT
   return $ case key of
     GLFW.Press   -> do
-      let (x,y,z) = pos gameState
-      gameState { pos = (x-0.02, y, z) }
+      let Camera _ _ _ cyaw _ = camera gameState
+      gameState { camera = (camera gameState) { yaw = (cyaw-0.4) } }
     GLFW.Release -> gameState  -- pass thru
 
 -------------------------------------------------------------
@@ -75,47 +74,35 @@ handleRight gameState = do
   key <- GLFW.getKey GLFW.RIGHT
   return $ case key of
     GLFW.Press   -> do
-      let (x,y,z) = pos gameState
-      gameState { pos = (x+0.02, y, z) }
+      let Camera _ _ _ cyaw _ = camera gameState
+      gameState { camera = (camera gameState) { yaw = (cyaw+0.4) } }
     GLFW.Release -> gameState  -- pass thru
 
 -------------------------------------------------------------
-handleUp           :: GameState -> IO GameState
-handleUp gameState = do
+moveForward           :: GameState -> IO GameState
+moveForward gameState = do
   key <- GLFW.getKey GLFW.UP
   return $ case key of
     GLFW.Press   -> do
-      let (x,y,z) = pos gameState
-      gameState { pos = (x, y+0.02, z) }
+      let Camera cx cy cz cyaw _ = camera gameState
+      gameState { 
+        camera = (camera gameState) { 
+          x = cx - (0.02 * sin( cyaw * (3.14159/180) )),
+          z = cz + (0.02 * cos( cyaw * (3.14159/180) ))
+        }}
     GLFW.Release -> gameState  -- pass thru
 
 -------------------------------------------------------------
-handleDown           :: GameState -> IO GameState
-handleDown gameState = do
+moveBackward           :: GameState -> IO GameState
+moveBackward gameState = do
   key <- GLFW.getKey GLFW.DOWN
   return $ case key of
     GLFW.Press   -> do
-      let (x,y,z) = pos gameState
-      gameState { pos = (x, y-0.02, z) }
-    GLFW.Release -> gameState  -- pass thru
-
--------------------------------------------------------------
-handleZ           :: GameState -> IO GameState
-handleZ gameState = do
-  key <- GLFW.getKey 'z'
-  return $ case key of
-    GLFW.Press   -> do
-      let (x,y,z) = pos gameState
-      gameState { pos = (x, y, z+0.02) }
-    GLFW.Release -> gameState  -- pass thru
-
--------------------------------------------------------------
-handleX           :: GameState -> IO GameState
-handleX gameState = do
-  key <- GLFW.getKey 'x'
-  return $ case key of
-    GLFW.Press   -> do
-      let (x,y,z) = pos gameState
-      gameState { pos = (x, y, z-0.02) }
+      let Camera cx cy cz cyaw _ = camera gameState
+      gameState { 
+        camera = (camera gameState) { 
+          x = cx + (0.02 * sin( cyaw * (3.14159/180) )),
+          z = cz - (0.02 * cos( cyaw * (3.14159/180) ))
+        }}
     GLFW.Release -> gameState  -- pass thru
 

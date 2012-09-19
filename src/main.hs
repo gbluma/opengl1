@@ -36,11 +36,9 @@ main = do
   args <- getArgs
   progname <- getProgName
 
-  -- TODO: this isn't calling correctly
-  GLFW.windowSizeCallback $= reshape
-
   -- create and initialize GameState
   gameState <- makeGameState >>= initGL 
+  GLFW.windowSizeCallback $= reshape
 
   -- enter infinite loop
   gameLoop gameState
